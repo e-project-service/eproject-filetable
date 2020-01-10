@@ -1,0 +1,8 @@
+include 'eproject-filetable-core'
+include 'eproject-filetable-boot'
+
+rootProject.name = 'eProjectFileTable'
+project(':eproject-filetable-core').projectDir = new File('core')
+project(':eproject-filetable-boot').projectDir = new File('boot')
+
+
