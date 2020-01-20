@@ -3,6 +3,7 @@ package com.github.xiaoyao9184.eproject.filetable.repository;
 import com.github.xiaoyao9184.eproject.filetable.entity.SampleFileTable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
 import java.io.InputStream;
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * Created by xy on 2020/1/16.
  */
-public interface SampleFileTableRepository extends JpaRepository<SampleFileTable, String> {
+public interface SampleFileTableRepository extends Repository<SampleFileTable, String> {
 
     @Query(value = "select " +
             " stream_id" +

@@ -127,6 +127,47 @@ project(':eproject-filetable-boot') {
     }
 }
 
+project(':eproject-filetable-autoconfigure') {
+
+    apply plugin: 'com.github.ksoichiro.build.info'
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-eclipse'
+
+    group 'com.github.xiaoyao9184.eproject.filetable'
+    version "${version}"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+
+        //boot
+        compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: "${springBootVersion}"
+        optional group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: "${springBootVersion}"
+
+        compile(project(':eproject-filetable-core'))
+
+        //Test
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        //Spring
+        testCompile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
+        testCompile group: 'org.springframework', name: 'spring-webmvc', version: "${springVersion}"
+        //Boot
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "${springBootVersion}"
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"
+        //DB
+        testCompile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.4.1.jre8'
+        testCompile group: 'c3p0', name: 'c3p0', version:'0.9.1.2'
+        testCompile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.12.Final'
+        testCompile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.0.12.Final'
+        //MVC
+        testCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+    }
+
+}
+
 project(':eproject-filetable-core') {
 
     apply plugin: 'com.github.ksoichiro.build.info'

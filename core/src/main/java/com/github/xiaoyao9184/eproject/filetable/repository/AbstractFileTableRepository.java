@@ -4,6 +4,7 @@ import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
 import java.io.Serializable;
@@ -14,7 +15,7 @@ import java.util.List;
  * Created by xy on 2020/1/15.
  */
 public interface AbstractFileTableRepository<T extends AbstractFileTable>
-        extends JpaRepository<T,String> {
+        extends Repository<T,String> {
 
     @Query(value = "select " +
             " stream_id" +
