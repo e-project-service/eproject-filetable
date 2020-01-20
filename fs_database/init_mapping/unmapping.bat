@@ -1,0 +1,1 @@
+psexec -i -s cmd /k "net use x: /delete"

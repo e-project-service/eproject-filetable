@@ -56,28 +56,28 @@ public class DatabaseFileTableHandlerTest {
     private DatabaseFileTableHandler databaseFileTableHandler;
 
     @Autowired
-    private BaseFileTableProperties attachFileTableProperties;
+    private BaseFileTableProperties fileTableProperties;
 
     public void createBak(){
 
         SMBClient client = new SMBClient();
 
-        try (Connection connection = client.connect(attachFileTableProperties.getServername())) {
+        try (Connection connection = client.connect(fileTableProperties.getServername())) {
             AuthenticationContext ac = new AuthenticationContext(
-                    attachFileTableProperties.getUsername(),
-                    attachFileTableProperties.getPassword().toCharArray(),
-                    attachFileTableProperties.getDomain());
+                    fileTableProperties.getUsername(),
+                    fileTableProperties.getPassword().toCharArray(),
+                    fileTableProperties.getDomain());
             Session session = connection.authenticate(ac);
 
             // Connect to Share
-            try (DiskShare share = (DiskShare) session.connectShare(attachFileTableProperties.getInstance())) {
+            try (DiskShare share = (DiskShare) session.connectShare(fileTableProperties.getInstance())) {
                 Set<FileAttributes> fileAttributes = new HashSet<>();
                 fileAttributes.add(FileAttributes.FILE_ATTRIBUTE_NORMAL);
                 Set<SMB2CreateOptions> createOptions = new HashSet<>();
                 createOptions.add(SMB2CreateOptions.FILE_RANDOM_ACCESS);
 
                 com.hierynomus.smbj.share.File f = share.openFile(
-                        attachFileTableProperties.getDatabase() + "\\" +
+                        fileTableProperties.getDatabase() + "\\" +
                                 TestFileTable.TABLE_NAME + "\\test.bak",
                         new HashSet<>(Collections.singletonList(AccessMask.GENERIC_ALL)),
                         fileAttributes,

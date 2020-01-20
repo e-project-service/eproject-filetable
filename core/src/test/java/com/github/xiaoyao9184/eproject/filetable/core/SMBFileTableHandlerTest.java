@@ -67,14 +67,14 @@ public class SMBFileTableHandlerTest {
                 .path("/file.txt")
                 .build()
                 .toUri();
-        File attach_unit = File.createTempFile("attach_unit",null);
+        File tempFile = File.createTempFile("tempFile",null);
         try(
-                FileOutputStream os = new FileOutputStream(attach_unit);
+                FileOutputStream os = new FileOutputStream(tempFile);
         ){
             os.write(new byte[]{0x01,0x0D,0x0D});
         }
 
-        FileInfo result = smbFileTableHandler.create(attach_unit,uri);
+        FileInfo result = smbFileTableHandler.create(tempFile,uri);
 
         Assert.assertEquals(
                 result.getPath(),

@@ -27,7 +27,7 @@ public class DatabaseFileTableHandler implements FileTableHandler {
     private AbstractFileTableRepository<? extends AbstractFileTable> abstractFileTableRepository;
 
     @Autowired
-    private BaseFileTableProperties attachFileTableProperties;
+    private BaseFileTableProperties fileTableProperties;
 
     @Autowired
     private TableNameProvider tableNameProvider;
@@ -89,7 +89,7 @@ public class DatabaseFileTableHandler implements FileTableHandler {
     public FileInfo read(URI uri) throws Exception {
         URI base = UriComponentsBuilder.fromUriString(
                     "smb:" +
-                    attachFileTableProperties.getRootPath().replace("\\","/")
+                    fileTableProperties.getRootPath().replace("\\","/")
                 )
                 .build()
                 .toUri();
@@ -113,8 +113,8 @@ public class DatabaseFileTableHandler implements FileTableHandler {
         info.setCreationTime(aft.getCreation_time());
 
         info.setServerName(base.getHost());
-        info.setInstance(attachFileTableProperties.getInstance());
-        info.setDatabase(attachFileTableProperties.getDatabase());
+        info.setInstance(fileTableProperties.getInstance());
+        info.setDatabase(fileTableProperties.getDatabase());
 
         return info;
     }
@@ -142,7 +142,7 @@ public class DatabaseFileTableHandler implements FileTableHandler {
         //use root because maybe servername use ip
         //and SQLServer use hostname
         URI base = UriComponentsBuilder.fromUriString(
-                "smb:" + attachFileTableProperties.getRootPath().replace("\\","/")
+                "smb:" + fileTableProperties.getRootPath().replace("\\","/")
         )
                 .build()
                 .toUri();
@@ -161,8 +161,8 @@ public class DatabaseFileTableHandler implements FileTableHandler {
                         info.setCreationTime(aft.getCreation_time());
 
                         info.setServerName(base.getHost());
-                        info.setInstance(attachFileTableProperties.getInstance());
-                        info.setDatabase(attachFileTableProperties.getDatabase());
+                        info.setInstance(fileTableProperties.getInstance());
+                        info.setDatabase(fileTableProperties.getDatabase());
 
                         return info;
                     })
@@ -194,8 +194,8 @@ public class DatabaseFileTableHandler implements FileTableHandler {
                         info.setCreationTime(aft.getCreation_time());
 
                         info.setServerName(base.getHost());
-                        info.setInstance(attachFileTableProperties.getInstance());
-                        info.setDatabase(attachFileTableProperties.getDatabase());
+                        info.setInstance(fileTableProperties.getInstance());
+                        info.setDatabase(fileTableProperties.getDatabase());
 
                         return info;
                     })

@@ -42,7 +42,7 @@ public class SMBFileTableHandler implements FileTableHandler {
     private TableNameProvider tableNameProvider;
 
     @Autowired
-    private BaseFileTableProperties attachFileTableProperties;
+    private BaseFileTableProperties fileTableProperties;
 
     private SMBClient client;
     private Session session;
@@ -50,32 +50,32 @@ public class SMBFileTableHandler implements FileTableHandler {
 
     @PostConstruct
     public void init() throws IOException {
-        if(attachFileTableProperties.getServername() == null){
+        if(fileTableProperties.getServername() == null){
             logger.error("No share server configuration provided of FileTable");
             return;
         }
 
         client = new SMBClient();
-        Connection connection = client.connect(attachFileTableProperties.getServername());
+        Connection connection = client.connect(fileTableProperties.getServername());
         AuthenticationContext ac = new AuthenticationContext(
-                attachFileTableProperties.getUsername(),
-                attachFileTableProperties.getPassword().toCharArray(),
-                attachFileTableProperties.getDomain());
+                fileTableProperties.getUsername(),
+                fileTableProperties.getPassword().toCharArray(),
+                fileTableProperties.getDomain());
         session = connection.authenticate(ac);
-        diskShare = (DiskShare) session.connectShare(attachFileTableProperties.getInstance());
+        diskShare = (DiskShare) session.connectShare(fileTableProperties.getInstance());
     }
 
 
 //    private Session onceSession = null;
 
     private void onceDiskShare(Consumer<DiskShare> diskShareConsumer) throws IOException {
-        try(Connection connection = client.connect(attachFileTableProperties.getServername())){
+        try(Connection connection = client.connect(fileTableProperties.getServername())){
             AuthenticationContext ac = new AuthenticationContext(
-                    attachFileTableProperties.getUsername(),
-                    attachFileTableProperties.getPassword().toCharArray(),
-                    attachFileTableProperties.getDomain());
+                    fileTableProperties.getUsername(),
+                    fileTableProperties.getPassword().toCharArray(),
+                    fileTableProperties.getDomain());
             Session session = connection.authenticate(ac);
-            DiskShare ds = (DiskShare) session.connectShare(attachFileTableProperties.getInstance());
+            DiskShare ds = (DiskShare) session.connectShare(fileTableProperties.getInstance());
 //        if(onceSession == null){
 //            onceSession = session.buildNestedSession(diskShare.getSmbPath());
 //        }
@@ -102,7 +102,7 @@ public class SMBFileTableHandler implements FileTableHandler {
     private FileInfo create(InputStream stream, String path, String name, Long size, Date time) throws Exception {
         //smb file path is database-directory\FileTable-directory\{file}
         String filePath = UriComponentsBuilder.newInstance()
-                .path(attachFileTableProperties.getDatabase())
+                .path(fileTableProperties.getDatabase())
                 .pathSegment(tableNameProvider.provide())
                 .path(path)
                 .toUriString();
@@ -149,9 +149,9 @@ public class SMBFileTableHandler implements FileTableHandler {
         info.setSize((long) copySize);
         info.setCreationTime(time);
 
-        info.setServerName(attachFileTableProperties.getServername());
-        info.setInstance(attachFileTableProperties.getInstance());
-        info.setDatabase(attachFileTableProperties.getDatabase());
+        info.setServerName(fileTableProperties.getServername());
+        info.setInstance(fileTableProperties.getInstance());
+        info.setDatabase(fileTableProperties.getDatabase());
         return info;
     }
 
@@ -222,7 +222,7 @@ public class SMBFileTableHandler implements FileTableHandler {
     public FileInfo create(URI uri) throws Exception {
         //smb file path is database-directory\FileTable-directory\{file}
         String filePath = UriComponentsBuilder.newInstance()
-                .path(attachFileTableProperties.getDatabase())
+                .path(fileTableProperties.getDatabase())
                 .pathSegment(tableNameProvider.provide())
                 .path(uri.getPath())
                 .toUriString();
@@ -245,9 +245,9 @@ public class SMBFileTableHandler implements FileTableHandler {
         info.setPath(uri.getPath());
         info.setParentPath(pn.v1());
 
-        info.setServerName(attachFileTableProperties.getServername());
-        info.setInstance(attachFileTableProperties.getInstance());
-        info.setDatabase(attachFileTableProperties.getDatabase());
+        info.setServerName(fileTableProperties.getServername());
+        info.setInstance(fileTableProperties.getInstance());
+        info.setDatabase(fileTableProperties.getDatabase());
         return info;
     }
 
@@ -255,7 +255,7 @@ public class SMBFileTableHandler implements FileTableHandler {
     public File readFile(URI uri) throws Exception {
         //smb file path is database-directory\FileTable-directory\{file}
         String filePath = UriComponentsBuilder.newInstance()
-                .path(attachFileTableProperties.getDatabase())
+                .path(fileTableProperties.getDatabase())
                 .pathSegment(tableNameProvider.provide())
                 .path(uri.getPath())
                 .toUriString();
@@ -290,7 +290,7 @@ public class SMBFileTableHandler implements FileTableHandler {
     public InputStream readStream(URI uri) throws Exception {
         //smb file path is database-directory\FileTable-directory\{file}
         String filePath = UriComponentsBuilder.newInstance()
-                .path(attachFileTableProperties.getDatabase())
+                .path(fileTableProperties.getDatabase())
                 .pathSegment(tableNameProvider.provide())
                 .path(uri.getPath())
                 .toUriString();
@@ -326,7 +326,7 @@ public class SMBFileTableHandler implements FileTableHandler {
     public FileInfo read(URI uri) throws Exception {
         //smb file path is database-directory\FileTable-directory\{file}
         String filePath = UriComponentsBuilder.newInstance()
-                .path(attachFileTableProperties.getDatabase())
+                .path(fileTableProperties.getDatabase())
                 .pathSegment(tableNameProvider.provide())
                 .path(uri.getPath())
                 .toUriString();
@@ -353,9 +353,9 @@ public class SMBFileTableHandler implements FileTableHandler {
         info.setSize(file.getStandardInformation().getEndOfFile());
         info.setCreationTime(file.getBasicInformation().getCreationTime().toDate());
 
-        info.setServerName(attachFileTableProperties.getServername());
-        info.setInstance(attachFileTableProperties.getInstance());
-        info.setDatabase(attachFileTableProperties.getDatabase());
+        info.setServerName(fileTableProperties.getServername());
+        info.setInstance(fileTableProperties.getInstance());
+        info.setDatabase(fileTableProperties.getDatabase());
         return info;
     }
 
@@ -363,7 +363,7 @@ public class SMBFileTableHandler implements FileTableHandler {
     public boolean delete(URI uri) throws Exception {
         //smb file path is database-directory\FileTable-directory\{file}
         String filePath = UriComponentsBuilder.newInstance()
-                .path(attachFileTableProperties.getDatabase())
+                .path(fileTableProperties.getDatabase())
                 .pathSegment(tableNameProvider.provide())
                 .path(uri.getPath())
                 .toUriString();
@@ -382,7 +382,7 @@ public class SMBFileTableHandler implements FileTableHandler {
     public List<FileInfo> readChild(URI uri) throws Exception {
         //smb file path is database-directory\FileTable-directory\{file}
         String filePath = UriComponentsBuilder.newInstance()
-                .path(attachFileTableProperties.getDatabase())
+                .path(fileTableProperties.getDatabase())
                 .pathSegment(tableNameProvider.provide())
                 .path(uri.getPath())
                 .toUriString();
@@ -408,9 +408,9 @@ public class SMBFileTableHandler implements FileTableHandler {
                     info.setSize(fi.getEndOfFile());
                     info.setCreationTime(fi.getCreationTime().toDate());
 
-                    info.setServerName(attachFileTableProperties.getServername());
-                    info.setInstance(attachFileTableProperties.getInstance());
-                    info.setDatabase(attachFileTableProperties.getDatabase());
+                    info.setServerName(fileTableProperties.getServername());
+                    info.setInstance(fileTableProperties.getInstance());
+                    info.setDatabase(fileTableProperties.getDatabase());
                     return info;
                 })
                 .collect(Collectors.toList());

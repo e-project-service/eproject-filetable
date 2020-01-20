@@ -20,7 +20,7 @@ import static com.github.xiaoyao9184.eproject.filetable.model.BaseFileTablePrope
 public class ConfigurationFileTableHandler implements FileTableHandler {
 
     @Autowired
-    private BaseFileTableProperties attachFileTableProperties;
+    private BaseFileTableProperties fileTableProperties;
 
     @Autowired
     private DatabaseFileTableHandler databaseFileTableHandler;
@@ -33,11 +33,11 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
 
     @Override
     public FileInfo create(MultipartFile multipartFile, URI uri) throws Exception {
-        BaseFileTableProperties.OperatorMethod om = attachFileTableProperties.getOperatorMethods()
+        BaseFileTableProperties.OperatorMethod om = fileTableProperties.getOperatorMethods()
                 .getOrDefault(CREATE, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.create(multipartFile,uri);
-        }else if(om == FILE && attachFileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
             return smbFileTableHandler.create(multipartFile,uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.create(multipartFile,uri);
@@ -47,11 +47,11 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
 
     @Override
     public FileInfo create(File file, URI uri) throws Exception {
-        BaseFileTableProperties.OperatorMethod om = attachFileTableProperties.getOperatorMethods()
+        BaseFileTableProperties.OperatorMethod om = fileTableProperties.getOperatorMethods()
                 .getOrDefault(CREATE, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.create(file,uri);
-        }else if(om == FILE && attachFileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
             return smbFileTableHandler.create(file,uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.create(file,uri);
@@ -61,11 +61,11 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
 
     @Override
     public FileInfo create(byte[] bytes, URI uri) throws Exception {
-        BaseFileTableProperties.OperatorMethod om = attachFileTableProperties.getOperatorMethods()
+        BaseFileTableProperties.OperatorMethod om = fileTableProperties.getOperatorMethods()
                 .getOrDefault(CREATE, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.create(bytes,uri);
-        }else if(om == FILE && attachFileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
             return smbFileTableHandler.create(bytes,uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.create(bytes,uri);
@@ -75,11 +75,11 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
 
     @Override
     public FileInfo create(URI uri) throws Exception {
-        BaseFileTableProperties.OperatorMethod om = attachFileTableProperties.getOperatorMethods()
+        BaseFileTableProperties.OperatorMethod om = fileTableProperties.getOperatorMethods()
                 .getOrDefault(CREATE, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.create(uri);
-        }else if(om == FILE && attachFileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
             return smbFileTableHandler.create(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.create(uri);
@@ -89,11 +89,11 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
 
     @Override
     public FileInfo create(InputStream stream, URI uri) throws Exception {
-        BaseFileTableProperties.OperatorMethod om = attachFileTableProperties.getOperatorMethods()
+        BaseFileTableProperties.OperatorMethod om = fileTableProperties.getOperatorMethods()
                 .getOrDefault(CREATE, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.create(stream,uri);
-        }else if(om == FILE && attachFileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
             return smbFileTableHandler.create(stream,uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.create(stream,uri);
@@ -103,11 +103,11 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
 
     @Override
     public File readFile(URI uri) throws Exception {
-        BaseFileTableProperties.OperatorMethod om = attachFileTableProperties.getOperatorMethods()
+        BaseFileTableProperties.OperatorMethod om = fileTableProperties.getOperatorMethods()
                 .getOrDefault(READ_STREAM, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.readFile(uri);
-        }else if(om == FILE && attachFileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
             return smbFileTableHandler.readFile(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.readFile(uri);
@@ -117,11 +117,11 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
 
     @Override
     public byte[] readBytes(URI uri) throws Exception {
-        BaseFileTableProperties.OperatorMethod om = attachFileTableProperties.getOperatorMethods()
+        BaseFileTableProperties.OperatorMethod om = fileTableProperties.getOperatorMethods()
                 .getOrDefault(READ_STREAM, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.readBytes(uri);
-        }else if(om == FILE && attachFileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
             return smbFileTableHandler.readBytes(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.readBytes(uri);
@@ -131,11 +131,11 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
 
     @Override
     public InputStream readStream(URI uri) throws Exception {
-        BaseFileTableProperties.OperatorMethod om = attachFileTableProperties.getOperatorMethods()
+        BaseFileTableProperties.OperatorMethod om = fileTableProperties.getOperatorMethods()
                 .getOrDefault(READ_STREAM, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.readStream(uri);
-        }else if(om == FILE && attachFileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
             return smbFileTableHandler.readStream(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.readStream(uri);
@@ -145,11 +145,11 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
 
     @Override
     public FileInfo read(URI uri) throws Exception {
-        BaseFileTableProperties.OperatorMethod om = attachFileTableProperties.getOperatorMethods()
+        BaseFileTableProperties.OperatorMethod om = fileTableProperties.getOperatorMethods()
                 .getOrDefault(READ, DATABASE);
         if(om == DATABASE){
             return databaseFileTableHandler.read(uri);
-        }else if(om == FILE && attachFileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
             return smbFileTableHandler.read(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.read(uri);
@@ -159,11 +159,11 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
 
     @Override
     public boolean delete(URI uri) throws Exception {
-        BaseFileTableProperties.OperatorMethod om = attachFileTableProperties.getOperatorMethods()
+        BaseFileTableProperties.OperatorMethod om = fileTableProperties.getOperatorMethods()
                 .getOrDefault(DELETE, DATABASE);
         if(om == DATABASE){
             return databaseFileTableHandler.delete(uri);
-        }else if(om == FILE && attachFileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
             return smbFileTableHandler.delete(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.delete(uri);
@@ -173,11 +173,11 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
 
     @Override
     public List<FileInfo> readChild(URI uri) throws Exception {
-        BaseFileTableProperties.OperatorMethod om = attachFileTableProperties.getOperatorMethods()
+        BaseFileTableProperties.OperatorMethod om = fileTableProperties.getOperatorMethods()
                 .getOrDefault(READ, DATABASE);
         if(om == DATABASE){
             return databaseFileTableHandler.readChild(uri);
-        }else if(om == FILE && attachFileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
             return smbFileTableHandler.readChild(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.readChild(uri);

@@ -1,0 +1,1 @@
+psexec -i -s cmd /k " net use x: \\db.xy.com\MSSQLSERVER2012FS\eProjectFileTable_fs_dir\test_filetable /persistent:yes"

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
@@ -16,10 +15,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
         classes = {
-                AttachTableNameProviderTest.Configuration.class }
+                TableNameProviderTest.Configuration.class }
 )
 @ComponentScan("com.github.xiaoyao9184.eproject.filetable")
-public class AttachTableNameProviderTest {
+public class TableNameProviderTest {
 
     public static class Configuration {
         @Bean
