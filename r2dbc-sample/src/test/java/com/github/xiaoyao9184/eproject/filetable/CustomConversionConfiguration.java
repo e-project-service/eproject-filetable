@@ -1,23 +1,15 @@
 package com.github.xiaoyao9184.eproject.filetable;
 
 import com.github.xiaoyao9184.eproject.filetable.entity.SampleFileTable;
-import io.r2dbc.spi.Blob;
-import io.r2dbc.spi.Clob;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.Row;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
-import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.convert.R2dbcCustomConversions;
-import reactor.core.publisher.BaseSubscriber;
-import reactor.core.publisher.Flux;
 
-import java.nio.ByteBuffer;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,49 +31,12 @@ public class CustomConversionConfiguration extends AbstractR2dbcConfiguration {
     @Override
     public R2dbcCustomConversions r2dbcCustomConversions() {
         List<Converter<?, ?>> converterList = new ArrayList<Converter<?, ?>>();
-        converterList.add(new PersonReadConverter());
-//        converterList.add(new ByteBufferReadConverter());
+        converterList.add(new SampleFileTableReadConverter());
         return new R2dbcCustomConversions(getStoreConversions(), converterList);
     }
 
-//    @ReadingConverter
-//    public static class ByteBufferReadConverter implements Converter<Row, ByteBuffer> {
-//
-//        @Override
-//        public ByteBuffer convert(Row source) {
-////            final ByteBuffer[] result = {null};
-//            Blob b = source.get("file_stream", Blob.class);
-////            b.stream()
-////                    .subscribe(new Subscriber<ByteBuffer>() {
-////                        @Override
-////                        public void onSubscribe(Subscription s) {
-////
-////                        }
-////
-////                        @Override
-////                        public void onNext(ByteBuffer byteBuffer) {
-////                            result[0] = byteBuffer;
-////                        }
-////
-////                        @Override
-////                        public void onError(Throwable t) {
-////
-////                        }
-////
-////                        @Override
-////                        public void onComplete() {
-////
-////                        }
-////                    });
-//            ByteBuffer result = Flux.from(b.stream())
-//                    .blockLast();
-////                .blockFirst();
-//            return result;
-//        }
-//    }
-
     @ReadingConverter
-    public static class PersonReadConverter implements Converter<Row, SampleFileTable> {
+    public static class SampleFileTableReadConverter implements Converter<Row, SampleFileTable> {
 
         @Override
         public SampleFileTable convert(Row source) {

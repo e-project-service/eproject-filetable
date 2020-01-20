@@ -22,12 +22,12 @@ public class SampleFileTableRepositoryIntegrationTests {
 	@Autowired SampleFileTableRepository repository;
 	@Autowired DatabaseClient database;
 
-	@Value("${eproject.filetable.share.path}")
+	@Value("${eproject.filetable.rootPath}")
 	String path;
 
 	@Test
 	public void getChildByPath() throws IOException {
-		repository.getChildByPath(path + "\\sample_filetable\\new_dir") //
+		repository.getChildByPathLocator(path + "\\sample_filetable\\new_dir") //
 				.as(StepVerifier::create)
 				.assertNext(fs -> {
 					fs.getId();
@@ -37,7 +37,7 @@ public class SampleFileTableRepositoryIntegrationTests {
 
 	@Test
 	public void getChildByRoot() throws IOException {
-		repository.getChildByRoot() //
+		repository.getChildByRootLocator() //
 				.as(StepVerifier::create) //
 				.assertNext(fs -> {
 					fs.getId();

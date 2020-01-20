@@ -32,7 +32,7 @@ public interface SampleFileTableRepository extends ReactiveCrudRepository<Sample
             ",[file_stream].PathName() as path_name" +
             " from sample_filetable" +
             " where [parent_path_locator] = GetPathLocator(:path)")
-    Flux<SampleFileTable> getChildByPath(String path);
+    Flux<SampleFileTable> getChildByPathLocator(String path);
 
     @Query(value = "select " +
             " stream_id" +
@@ -58,10 +58,10 @@ public interface SampleFileTableRepository extends ReactiveCrudRepository<Sample
             //todo BUG if remove this param
             //java.lang.IllegalArgumentException: Invalid TDS type: 0
             " where [path_locator].GetLevel() = :level")
-    Flux<SampleFileTable> getChildByRoot(Integer level);
+    Flux<SampleFileTable> getChildByRootLocator(Integer level);
 
-    default Flux<SampleFileTable> getChildByRoot(){
-        return getChildByRoot(1);
+    default Flux<SampleFileTable> getChildByRootLocator(){
+        return getChildByRootLocator(1);
     }
 
 
