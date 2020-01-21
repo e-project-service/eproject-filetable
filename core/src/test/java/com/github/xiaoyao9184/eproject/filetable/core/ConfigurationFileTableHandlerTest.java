@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -26,7 +25,7 @@ import static com.github.xiaoyao9184.eproject.filetable.model.BaseFileTablePrope
         classes = {
                 PropertiesConfiguration.class }
 )
-@TestPropertySource(locations = "classpath:mixing-remote.properties")
+@TestPropertySource(locations = "classpath:filetable-mixing-remote.properties")
 @ComponentScan("com.github.xiaoyao9184.eproject.filetable")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ConfigurationFileTableHandlerTest {

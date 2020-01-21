@@ -27,7 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
                 MssqlConfig.class,
                 BootMvcConfiguration.class }
 )
-@TestPropertySource(locations = "classpath:mixing-localhost.properties")
+@TestPropertySource(locations = "classpath:filetable-mixing-localhost.properties")
 public class MimeStreamControllerTest {
 
     @LocalServerPort

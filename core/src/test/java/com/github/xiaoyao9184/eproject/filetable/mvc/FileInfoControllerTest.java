@@ -39,7 +39,7 @@ import java.util.List;
                 MssqlConfig.class,
                 BootMvcConfiguration.class }
 )
-@TestPropertySource(locations = "classpath:mixing-localhost.properties")
+@TestPropertySource(locations = "classpath:filetable-mixing-localhost.properties")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FileInfoControllerTest {
 

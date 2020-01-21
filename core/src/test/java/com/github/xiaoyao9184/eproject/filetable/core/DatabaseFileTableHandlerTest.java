@@ -47,7 +47,7 @@ import java.util.Set;
                 DataBaseHandlerConfiguration.class,
                 MssqlConfig.class }
 )
-@TestPropertySource(locations = "classpath:db.properties")
+@TestPropertySource(locations = "classpath:filetable-db.properties")
 @ComponentScan("com.github.xiaoyao9184.eproject.filetable")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DatabaseFileTableHandlerTest {

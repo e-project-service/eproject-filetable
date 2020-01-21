@@ -184,19 +184,13 @@ project(':eproject-filetable-core') {
 
     dependencies {
 
-        //boot
-        compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: "${springBootVersion}"
-        optional group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: "${springBootVersion}"
         //spring
         compile group: 'org.springframework', name: 'spring-context', version: "${springVersion}"
         compile group: 'org.springframework', name: 'spring-web', version: "${springVersion}"
         compile group: 'org.springframework', name: 'spring-webmvc', version: "${springVersion}"
         //spring-data-jpa
         compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '1.11.23.RELEASE'
-        //swagger
-        compile(group: 'io.swagger', name: 'swagger-annotations', version: '1.5.20'){
-            force = true
-        }
+
         //smbj
         compile group: 'com.hierynomus', name: 'smbj', version: '0.10.0'
         //jool

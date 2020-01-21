@@ -31,7 +31,7 @@ import java.util.List;
                 PropertiesConfiguration.class,
                 FileSystemHandlerConfiguration.class }
 )
-@TestPropertySource(locations = "classpath:fs.properties")
+@TestPropertySource(locations = "classpath:filetable-fs.properties")
 @ComponentScan("com.github.xiaoyao9184.eproject.filetable.core")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FileSystemFileTableHandlerTest {

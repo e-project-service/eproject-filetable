@@ -30,7 +30,7 @@ import java.util.List;
                 PropertiesConfiguration.class,
                 FileSystemHandlerConfiguration.class }
 )
-@TestPropertySource(locations = "classpath:smb.properties")
+@TestPropertySource(locations = "classpath:filetable-smb.properties")
 @ComponentScan("com.github.xiaoyao9184.eproject.filetable.core")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SMBFileTableHandlerTest {
