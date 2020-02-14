@@ -6,11 +6,10 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.ResourceRegion;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.HandlerMapping;
@@ -21,20 +20,19 @@ import java.net.URI;
 import java.util.Date;
 import java.util.Optional;
 
-import static org.springframework.http.HttpHeaders.IF_MODIFIED_SINCE;
-import static org.springframework.http.HttpHeaders.IF_NONE_MATCH;
+import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
 
 /**
- * get file by mime
- * Created by xy on 2020/1/15.
+ * get file by mime (only mapping range header request)
+ * Created by xy on 2020/2/14.
  */
-@Controller
+@RestController
 @Scope(value = BeanDefinition.SCOPE_SINGLETON)
 @RequestMapping(value = "/v1/mimes")
 @Api(value = "/v1/mimes")
-public class MimeStreamController {
+public class MimeStreamRangeController {
 
     @Autowired
     private FileStorage<URI> storage;
@@ -70,12 +68,14 @@ public class MimeStreamController {
     )
     @RequestMapping(
             value = "/application/octet-stream/{path:.*}/**",
+            headers = RANGE,
             method = {RequestMethod.GET, RequestMethod.HEAD})
-    public ResponseEntity<Resource> mime_application_octet_stream(
+    public ResponseEntity<ResourceRegion> mime_application_octet_stream(
             @ApiParam(value = "file path", required = true)
             @PathVariable("path") String path,
             @RequestHeader(IF_NONE_MATCH) Optional<String> requestEtagOpt,
             @RequestHeader(IF_MODIFIED_SINCE) Optional<Date> ifModifiedSinceOpt,
+            @RequestHeader(RANGE) Optional<String> range,
             HttpMethod method,
             HttpServletRequest request){
         path = extractPath(request);
@@ -86,7 +86,7 @@ public class MimeStreamController {
                 .toUri();
 
         return findExistingFile(method, uri, APPLICATION_OCTET_STREAM)
-                .map(file -> file.handle(requestEtagOpt, ifModifiedSinceOpt))
+                .map(file -> file.handle(requestEtagOpt, ifModifiedSinceOpt, range))
                 .orElseGet(() -> new ResponseEntity<>(NOT_FOUND));
     }
 
@@ -103,14 +103,16 @@ public class MimeStreamController {
     )
     @RequestMapping(
             value = "/application/{type}/{path:.*}/**",
+            headers = RANGE,
             method = {RequestMethod.GET, RequestMethod.HEAD})
-    public ResponseEntity<Resource> mime_application(
+    public ResponseEntity<ResourceRegion> mime_application(
             @ApiParam(value = "file path", required = true)
             @PathVariable("path") String path,
             @ApiParam(value = "sub type", required = true)
             @PathVariable("type") String type,
             @RequestHeader(IF_NONE_MATCH) Optional<String> requestEtagOpt,
             @RequestHeader(IF_MODIFIED_SINCE) Optional<Date> ifModifiedSinceOpt,
+            @RequestHeader(RANGE) Optional<String> range,
             HttpMethod method,
             HttpServletRequest request){
         path = extractPath(request);
@@ -121,7 +123,7 @@ public class MimeStreamController {
                 .toUri();
 
         return findExistingFile(method, uri, MediaType.parseMediaType("application/" + type))
-                .map(file -> file.handle(requestEtagOpt, ifModifiedSinceOpt))
+                .map(file -> file.handle(requestEtagOpt, ifModifiedSinceOpt, range))
                 .orElseGet(() -> new ResponseEntity<>(NOT_FOUND));
     }
 
@@ -137,8 +139,9 @@ public class MimeStreamController {
     )
     @RequestMapping(
             value = "/image/{type}/{path:.*}/**",
+            headers = RANGE,
             method = {RequestMethod.GET, RequestMethod.HEAD})
-    public ResponseEntity<Resource> mime_image(
+    public ResponseEntity<ResourceRegion> mime_image(
             @ApiParam(value = "file path", required = true)
             @PathVariable("path") String path,
             @ApiParam(value = "sub type", required = true)
@@ -148,6 +151,7 @@ public class MimeStreamController {
             @RequestParam(value = "width", required = false) Integer width,
             @RequestHeader(IF_NONE_MATCH) Optional<String> requestEtagOpt,
             @RequestHeader(IF_MODIFIED_SINCE) Optional<Date> ifModifiedSinceOpt,
+            @RequestHeader(RANGE) Optional<String> range,
             HttpMethod method,
             HttpServletRequest request){
         path = extractPath(request);
@@ -158,7 +162,7 @@ public class MimeStreamController {
                 .toUri();
 
         return findExistingFile(method, uri, MediaType.parseMediaType("image/" + type))
-                .map(file -> file.handle(requestEtagOpt, ifModifiedSinceOpt))
+                .map(file -> file.handle(requestEtagOpt, ifModifiedSinceOpt, range))
                 .orElseGet(() -> new ResponseEntity<>(NOT_FOUND));
     }
 
@@ -175,8 +179,9 @@ public class MimeStreamController {
     )
     @RequestMapping(
             value = "/{type}/{subType}/{path:.*}/**",
+            headers = RANGE,
             method = {RequestMethod.GET, RequestMethod.HEAD})
-    public ResponseEntity<Resource> mime_any(
+    public ResponseEntity<ResourceRegion> mime_any(
             @ApiParam(value = "file path", required = true)
             @PathVariable("path") String path,
             @ApiParam(value = "type", required = true)
@@ -185,6 +190,7 @@ public class MimeStreamController {
             @PathVariable("subType") String subType,
             @RequestHeader(IF_NONE_MATCH) Optional<String> requestEtagOpt,
             @RequestHeader(IF_MODIFIED_SINCE) Optional<Date> ifModifiedSinceOpt,
+            @RequestHeader(RANGE) Optional<String> range,
             HttpMethod method,
             HttpServletRequest request){
         path = extractPath(request);
@@ -195,7 +201,7 @@ public class MimeStreamController {
                 .toUri();
 
         return findExistingFile(method, uri, MediaType.parseMediaType(type + "/" + subType))
-                .map(file -> file.handle(requestEtagOpt, ifModifiedSinceOpt))
+                .map(file -> file.handle(requestEtagOpt, ifModifiedSinceOpt, range))
                 .orElseGet(() -> new ResponseEntity<>(NOT_FOUND));
     }
 
@@ -212,12 +218,14 @@ public class MimeStreamController {
     )
     @RequestMapping(
             value = "/auto/auto/{path:.*}/**",
+            headers = RANGE,
             method = {RequestMethod.GET, RequestMethod.HEAD})
-    public ResponseEntity<Resource> mime_auto(
+    public ResponseEntity<ResourceRegion> mime_auto(
             @ApiParam(value = "file path", required = true)
             @PathVariable("path") String path,
             @RequestHeader(IF_NONE_MATCH) Optional<String> requestEtagOpt,
             @RequestHeader(IF_MODIFIED_SINCE) Optional<Date> ifModifiedSinceOpt,
+            @RequestHeader(RANGE) Optional<String> range,
             HttpMethod method,
             HttpServletRequest request){
         path = extractPath(request);
@@ -228,7 +236,7 @@ public class MimeStreamController {
                 .toUri();
 
         return findExistingFile(method, uri)
-                .map(file -> file.handle(requestEtagOpt, ifModifiedSinceOpt))
+                .map(file -> file.handle(requestEtagOpt, ifModifiedSinceOpt, range))
                 .orElseGet(() -> new ResponseEntity<>(NOT_FOUND));
     }
 }

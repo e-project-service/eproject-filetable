@@ -197,6 +197,8 @@ project(':eproject-filetable-core') {
         compile group: 'org.jooq', name: 'jool-java-8', version: '0.9.14'
         //commons-io
         compile group: 'commons-io', name: 'commons-io', version: '2.6'
+        //guava
+        compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
         //aspectjweaver
         runtime group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.5'
         //servlet
