@@ -202,4 +202,40 @@ public class DatabaseFileTableHandler implements FileTableHandler {
                     .collect(Collectors.toList());
         }
     }
+
+
+    public List<FileInfo> search(URI uri, String search) {
+        URI base = UriComponentsBuilder.fromUriString(
+                "smb:" + fileTableProperties.getRootPath().replace("\\","/")
+        )
+                .build()
+                .toUri();
+
+        URI fileNamespacePathUri = UriComponentsBuilder.newInstance()
+                .path(tableNameProvider.provide())
+                .path(uri.getPath())
+                .build()
+                .toUri();
+        String fileNamespacePath = "\\" +
+                fileNamespacePathUri.getPath().replace("/","\\");
+
+        return abstractFileTableRepository.findByFileNamespacePathStartsWithAndNameContains(fileNamespacePath,search)
+                .stream()
+                .map(aft -> {
+                    FileTableInfo info = new FileTableInfo();
+                    info.setName(uri.toString() + "/" + aft.getName());
+                    info.setPath(uri.toString());
+                    info.setParentPath(aft.getFile_namespace_path().replace(aft.getName(),""));
+
+                    info.setSize(aft.getCached_file_size());
+                    info.setCreationTime(aft.getCreation_time());
+
+                    info.setServerName(base.getHost());
+                    info.setInstance(fileTableProperties.getInstance());
+                    info.setDatabase(fileTableProperties.getDatabase());
+
+                    return info;
+                })
+                .collect(Collectors.toList());
+    }
 }

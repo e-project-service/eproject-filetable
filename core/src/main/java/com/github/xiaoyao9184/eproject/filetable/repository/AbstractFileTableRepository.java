@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.io.Serializable;
 import java.sql.Blob;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -65,6 +66,56 @@ public interface AbstractFileTableRepository<T extends AbstractFileTable>
             " where [parent_path_locator] = GetPathLocator(:path)", nativeQuery = true)
     List<T> getChildByPathLocator(@Param("path") String pathLocator);
 
+    @Query(value = "select " +
+            " stream_id" +
+            ",name" +
+            ",file_type" +
+            ",cached_file_size" +
+            ",creation_time" +
+            ",last_write_time" +
+            ",last_access_time" +
+            ",is_directory" +
+            ",is_offline" +
+            ",is_hidden" +
+            ",is_readonly" +
+            ",is_archive" +
+            ",is_system" +
+            ",is_temporary" +
+
+            ",FileTableRootPath() as root" +
+            ",[path_locator].GetLevel() as level" +
+            ",[file_stream].GetFileNamespacePath() as file_namespace_path" +
+            ",[file_stream].PathName() as path_name" +
+            " from #{#entityName}" +
+            " where [name] like ('%' + :name + '%')", nativeQuery = true)
+    List<T> findByNameContains(@Param("name") String name);
+
+    @Query(value = "select " +
+            " stream_id" +
+            ",name" +
+            ",file_type" +
+            ",cached_file_size" +
+            ",creation_time" +
+            ",last_write_time" +
+            ",last_access_time" +
+            ",is_directory" +
+            ",is_offline" +
+            ",is_hidden" +
+            ",is_readonly" +
+            ",is_archive" +
+            ",is_system" +
+            ",is_temporary" +
+
+            ",FileTableRootPath() as root" +
+            ",[path_locator].GetLevel() as level" +
+            ",[file_stream].GetFileNamespacePath() as file_namespace_path" +
+            ",[file_stream].PathName() as path_name" +
+            " from #{#entityName}" +
+            " where [file_stream].GetFileNamespacePath() like (:namespacePath + '%')" +
+            " and [name] like ('%' + :name + '%')", nativeQuery = true)
+    List<T> findByFileNamespacePathStartsWithAndNameContains(@Param("namespacePath") String namespacePath, @Param("name") String name);
+
+
     //TODO fix mapping
     @Query(value = "select " +
             " file_stream" +
@@ -107,4 +158,5 @@ public interface AbstractFileTableRepository<T extends AbstractFileTable>
             " where [file_stream].GetFileNamespacePath() = :path", nativeQuery = true)
     @Modifying
     Integer deleteByPath(@Param("path") String fileNamespacePath);
+
 }
