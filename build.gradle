@@ -66,11 +66,11 @@ project(':eproject-filetable-boot') {
     targetCompatibility = 1.8
 
     repositories {
-        maven { url "http://repo.spring.io/snapshot" }
-        maven { url "http://repo.spring.io/milestone" }
-//        maven { url "http://repo.spring.io/libs-snapshot-local" }
-//        maven { url "http://repo.spring.io/libs-milestone-local" }
-//        maven { url "http://repo.spring.io/libs-release-local" }
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+//        maven { url "https://repo.spring.io/libs-snapshot-local" }
+//        maven { url "https://repo.spring.io/libs-milestone-local" }
+//        maven { url "https://repo.spring.io/libs-release-local" }
         maven { url "http://repo.maven.apache.org/maven2" }
     }
 
