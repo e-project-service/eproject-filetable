@@ -210,6 +210,7 @@ project(':eproject-filetable-core') {
 
         //eProject
         compile(project(':eproject-filetable-model'))
+        compile(project(':eproject-filestorage-mvc'))
 
         //Test
         testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -243,6 +244,120 @@ project(':eproject-filetable-model') {
     dependencies {
         //swagger
         compile group: 'io.swagger', name: 'swagger-annotations', version: '1.5.20'
+    }
+
+}
+
+project(':eproject-filetable-mvc') {
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-eclipse'
+
+    group 'com.github.xiaoyao9184.eproject.filetable'
+    version "${version}"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+        //servlet
+        compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+        //spring
+        compile group: 'org.springframework', name: 'spring-context', version: "${springVersion}"
+        compile group: 'org.springframework', name: 'spring-web', version: "${springVersion}"
+        compile group: 'org.springframework', name: 'spring-webmvc', version: "${springVersion}"
+        //boot
+        optional group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
+
+        //commons-io
+        compile group: 'commons-io', name: 'commons-io', version: '2.6'
+
+        ///slf4j-api
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+
+        //swagger
+        compile(group: 'io.swagger', name: 'swagger-annotations', version: '1.5.20')
+
+        compile(project(":eproject-filestorage-api"))
+        compile(project(":eproject-filetable-core"))
+
+        //junit
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        //spring
+        testCompile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
+        testCompile group: 'org.springframework', name: 'spring-webmvc', version: "${springVersion}"
+        //boot
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    }
+
+}
+
+
+project(':eproject-filestorage-api') {
+
+    apply plugin: 'java'
+
+    group 'com.github.xiaoyao9184.eproject.filestorage'
+    version "${version}"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+        //guava
+        compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
+    }
+}
+
+project(':eproject-filestorage-mvc') {
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-eclipse'
+
+    group 'com.github.xiaoyao9184.eproject.filestorage'
+    version "${version}"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+        //servlet
+        compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+        //spring
+        compile group: 'org.springframework', name: 'spring-context', version: "${springVersion}"
+        compile group: 'org.springframework', name: 'spring-web', version: "${springVersion}"
+        compile group: 'org.springframework', name: 'spring-webmvc', version: "${springVersion}"
+        //boot
+        optional group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
+
+        //commons-io
+        compile group: 'commons-io', name: 'commons-io', version: '2.6'
+
+        ///slf4j-api
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+
+        //swagger
+        compile(group: 'io.swagger', name: 'swagger-annotations', version: '1.5.20')
+
+        compile(project(":eproject-filestorage-api"))
+
+        //junit
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        //spring
+        testCompile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
+        testCompile group: 'org.springframework', name: 'spring-webmvc', version: "${springVersion}"
+        //boot
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
     }
 
 }

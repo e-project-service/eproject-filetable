@@ -3,7 +3,7 @@ package com.github.xiaoyao9184.eproject.filetable.repository;
 import com.github.xiaoyao9184.eproject.filetable.MssqlConfig;
 import com.github.xiaoyao9184.eproject.filetable.SwitchRepositoryConfiguration;
 import com.github.xiaoyao9184.eproject.filetable.autoconfigure.FileTableAutoConfiguration;
-import com.github.xiaoyao9184.eproject.filetable.core.ThreadLocalEntitySwitchTableNameProvider;
+import com.github.xiaoyao9184.eproject.filetable.core.ThreadLocalEntitySwitchFileTableNameProvider;
 import com.github.xiaoyao9184.eproject.filetable.entity.SampleFileTable;
 import com.github.xiaoyao9184.eproject.filetable.entity.TestFileTable;
 import com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties;
@@ -46,7 +46,7 @@ import java.util.*;
 public class EntityTableNameSwitchTableRepositoryTest {
 
     @Autowired
-    ThreadLocalEntitySwitchTableNameProvider tableNameProvider;
+    ThreadLocalEntitySwitchFileTableNameProvider tableNameProvider;
 
     @Autowired
     EntityTableNameSwitchTableRepository databaseFileTableHandlerRepository;

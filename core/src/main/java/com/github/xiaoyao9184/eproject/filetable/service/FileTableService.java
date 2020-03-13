@@ -1,7 +1,7 @@
 package com.github.xiaoyao9184.eproject.filetable.service;
 
-import com.github.xiaoyao9184.eproject.filetable.core.FileTableHandler;
-import com.github.xiaoyao9184.eproject.filetable.model.FileInfo;
+import com.github.xiaoyao9184.eproject.filetable.core.handle.FileTableHandler;
+import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,27 +24,27 @@ public class FileTableService implements FileTableHandler {
 
 
     @Override
-    public FileInfo create(MultipartFile multipartFile, URI uri) throws Exception {
+    public AbstractFileTable create(MultipartFile multipartFile, URI uri) throws Exception {
         return fileTableHandler.create(multipartFile, uri);
     }
 
     @Override
-    public FileInfo create(File file, URI uri) throws Exception {
+    public AbstractFileTable create(File file, URI uri) throws Exception {
         return fileTableHandler.create(file, uri);
     }
 
     @Override
-    public FileInfo create(InputStream stream, URI uri) throws Exception {
+    public AbstractFileTable create(InputStream stream, URI uri) throws Exception {
         return fileTableHandler.create(stream, uri);
     }
 
     @Override
-    public FileInfo create(byte[] bytes, URI uri) throws Exception {
+    public AbstractFileTable create(byte[] bytes, URI uri) throws Exception {
         return fileTableHandler.create(bytes, uri);
     }
 
     @Override
-    public FileInfo create(URI uri) throws Exception {
+    public AbstractFileTable create(URI uri) throws Exception {
         return fileTableHandler.create(uri);
     }
 
@@ -64,7 +64,7 @@ public class FileTableService implements FileTableHandler {
     }
 
     @Override
-    public FileInfo read(URI uri) throws Exception {
+    public AbstractFileTable read(URI uri) throws Exception {
         return fileTableHandler.read(uri);
     }
 
@@ -75,7 +75,17 @@ public class FileTableService implements FileTableHandler {
     }
 
     @Override
-    public List<FileInfo> readChild(URI uri) throws Exception {
+    public List<AbstractFileTable> readChild(URI uri) throws Exception {
         return fileTableHandler.readChild(uri);
+    }
+
+    @Override
+    public boolean rename(URI uri, String name) throws Exception {
+        return fileTableHandler.rename(uri, name);
+    }
+
+    @Override
+    public List<AbstractFileTable> search(URI baseUri, String search) throws Exception {
+        return fileTableHandler.search(baseUri, search);
     }
 }

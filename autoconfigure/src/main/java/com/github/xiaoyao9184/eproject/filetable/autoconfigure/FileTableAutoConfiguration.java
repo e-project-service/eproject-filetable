@@ -1,11 +1,17 @@
 package com.github.xiaoyao9184.eproject.filetable.autoconfigure;
 
 import com.github.xiaoyao9184.eproject.filetable.core.*;
+import com.github.xiaoyao9184.eproject.filetable.core.convert.FileTableDefaultConverter;
+import com.github.xiaoyao9184.eproject.filetable.core.filestorage.FileTableConvertibleStorage;
+import com.github.xiaoyao9184.eproject.filetable.core.filestorage.FileTableStorage;
+import com.github.xiaoyao9184.eproject.filetable.core.handle.*;
 import com.github.xiaoyao9184.eproject.filetable.repository.AbstractFileTableRepository;
-import com.github.xiaoyao9184.eproject.filetable.repository.DefaultTableRepository;
+import com.github.xiaoyao9184.eproject.filetable.repository.DefaultFileTableRepository;
+import com.github.xiaoyao9184.eproject.filetable.service.FileTableService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -21,22 +27,43 @@ public class FileTableAutoConfiguration {
 
     public FileTableAutoConfiguration() {
         if(logger.isDebugEnabled()){
-            logger.debug("Init AttachFileTableAutoConfiguration");
+            logger.debug("Init {}", FileTableAutoConfiguration.class.getName());
         }
-    }
-
-    @Bean("databaseFileTableHandlerRepository")
-    @ConditionalOnMissingBean
-    public AbstractFileTableRepository databaseFileTableHandlerRepository(
-            @Autowired DefaultTableRepository defaultTableRepository
-    ){
-        return defaultTableRepository;
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public TableNameProvider tableNameProvider(){
-        return new DefaultTableNameProvider();
+    public FileTableNameProvider tableNameProvider(){
+        return new DefaultFileTableNameProvider();
+    }
+
+    public static final String DEFAULT_FILE_TABLE_REPOSITORY = "databaseFileTableHandlerRepository";
+
+    /**
+     * Default FileTableRepository
+     * Both for {@link SimpleJpaRepositoryBeanFileTableNameProvider}
+     * @param defaultFileTableRepository
+     * @return
+     */
+    @Bean(DEFAULT_FILE_TABLE_REPOSITORY)
+    @ConditionalOnMissingBean
+    public AbstractFileTableRepository databaseFileTableHandlerRepository(
+            @Autowired DefaultFileTableRepository defaultFileTableRepository
+    ){
+        return defaultFileTableRepository;
+    }
+
+    /**
+     *
+     * @param defaultFileTableRepository Create by Spring Data JPA
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public FileTableRepositoryProvider fileTableRepositoryProvider(
+            @Autowired DefaultFileTableRepository defaultFileTableRepository
+    ){
+        return () -> defaultFileTableRepository;
     }
 
     @Bean
@@ -58,6 +85,23 @@ public class FileTableAutoConfiguration {
     @Bean
     public DatabaseFileTableHandler databaseFileTableHandler(){
         return new DatabaseFileTableHandler();
+    }
+
+    @Bean
+    public FileTableService fileTableService(){
+        return new FileTableService();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(FileTableConvertibleStorage.class)
+    public FileTableStorage fileTableStorage(){
+        return new FileTableStorage(fileTableService());
+    }
+
+    @Bean
+    @ConditionalOnBean(FileTableConvertibleStorage.class)
+    public FileTableDefaultConverter fileTableDefaultConverter(){
+        return new FileTableDefaultConverter();
     }
 
 

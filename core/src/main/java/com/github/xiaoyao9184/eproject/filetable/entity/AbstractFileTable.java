@@ -65,6 +65,9 @@ public abstract class AbstractFileTable {
     @Column(name="level")
     private Integer level;
 
+    @Column(name="locator")
+    private String locator;
+
     @Column(name="file_namespace_path")
     private String file_namespace_path;
 
@@ -198,6 +201,14 @@ public abstract class AbstractFileTable {
 
     public void setLevel(Integer level) {
         this.level = level;
+    }
+
+    public String getLocator() {
+        return locator;
+    }
+
+    public void setLocator(String locator) {
+        this.locator = locator;
     }
 
     public String getFile_namespace_path() {

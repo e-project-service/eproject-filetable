@@ -2,15 +2,25 @@ include 'eproject-filetable-r2dbc-sample'
 include 'eproject-filetable-jdbc-sample'
 include 'eproject-filetable-model'
 include 'eproject-filetable-core'
+include 'eproject-filetable-mvc'
 include 'eproject-filetable-autoconfigure'
 include 'eproject-filetable-boot'
+
+include 'eproject-filestorage-api'
+include 'eproject-filestorage-mvc'
 
 rootProject.name = 'eProjectFileTable'
 project(':eproject-filetable-r2dbc-sample').projectDir = new File('r2dbc-sample')
 project(':eproject-filetable-jdbc-sample').projectDir = new File('jdbc-sample')
 project(':eproject-filetable-model').projectDir = new File('model')
 project(':eproject-filetable-core').projectDir = new File('core')
+project(':eproject-filetable-mvc').projectDir = new File('mvc')
 project(':eproject-filetable-autoconfigure').projectDir = new File('autoconfigure')
 project(':eproject-filetable-boot').projectDir = new File('boot')
+
+project(':eproject-filestorage-api').projectDir = new File('filestorage-api')
+project(':eproject-filestorage-mvc').projectDir = new File('filestorage-mvc')
+
+
 
 

@@ -1,6 +1,6 @@
 package com.github.xiaoyao9184.eproject.filetable;
 
-import com.github.xiaoyao9184.eproject.filetable.core.TableNameProvider;
+import com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProvider;
 import com.github.xiaoyao9184.eproject.filetable.entity.TestFileTable;
 import com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,15 +14,15 @@ import org.springframework.context.annotation.Bean;
 public class PropertiesConfiguration {
 
     @ConfigurationProperties(
-            prefix = "eproject.filetable"
+            prefix = "project.filetable"
     )
     public static class TestFileTableProperties extends BaseFileTableProperties {
 
     }
 
     @Bean
-    public TableNameProvider tableNameProvider(){
-        return new TableNameProvider() {
+    public FileTableNameProvider tableNameProvider(){
+        return new FileTableNameProvider() {
             @Override
             public String provide() {
                 return TestFileTable.TABLE_NAME;

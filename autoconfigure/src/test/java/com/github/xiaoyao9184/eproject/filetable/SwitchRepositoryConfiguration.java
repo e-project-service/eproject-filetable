@@ -1,23 +1,13 @@
 package com.github.xiaoyao9184.eproject.filetable;
 
+import com.github.xiaoyao9184.eproject.filetable.autoconfigure.FileTableAutoConfiguration;
 import com.github.xiaoyao9184.eproject.filetable.core.*;
-import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
-import com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties;
 import com.github.xiaoyao9184.eproject.filetable.repository.AbstractFileTableRepository;
-import com.github.xiaoyao9184.eproject.filetable.repository.DefaultTableRepository;
+import com.github.xiaoyao9184.eproject.filetable.repository.DefaultFileTableRepository;
 import com.github.xiaoyao9184.eproject.filetable.repository.EntityTableNameSwitchTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.http.MediaType;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.List;
 
@@ -26,17 +16,40 @@ import java.util.List;
  */
 public class SwitchRepositoryConfiguration {
 
-    @Bean("databaseFileTableHandlerRepository")
-    public EntityTableNameSwitchTableRepository databaseFileTableHandlerRepository(
-            @Autowired TableNameProvider tableNameProvider,
+    /**
+     * Not create because it not JPA Repository
+     * @param fileTableNameProvider
+     * @param fileTableRepository
+     * @return
+     */
+    @Bean
+    public EntityTableNameSwitchTableRepository entityTableNameSwitchTableRepository(
+            @Autowired FileTableNameProvider fileTableNameProvider,
             @Autowired List<AbstractFileTableRepository> fileTableRepository
     ){
-        return new EntityTableNameSwitchTableRepository(tableNameProvider,fileTableRepository);
+        return new EntityTableNameSwitchTableRepository(fileTableNameProvider,fileTableRepository);
     }
 
+    /**
+     * Replace {@link FileTableAutoConfiguration#fileTableRepositoryProvider(DefaultFileTableRepository)}
+     * @param entityTableNameSwitchTableRepository
+     * @return
+     */
     @Bean
-    public ThreadLocalEntitySwitchTableNameProvider tableNameProvider(){
-        return new ThreadLocalEntitySwitchTableNameProvider();
+    public FileTableRepositoryProvider fileTableRepositoryProvider(
+            @Autowired EntityTableNameSwitchTableRepository entityTableNameSwitchTableRepository
+    ){
+        return () -> entityTableNameSwitchTableRepository;
+    }
+
+    /**
+     * Replace {@link FileTableAutoConfiguration#tableNameProvider()}
+     * Switch table name on thread
+     * @return
+     */
+    @Bean
+    public ThreadLocalEntitySwitchFileTableNameProvider tableNameProvider(){
+        return new ThreadLocalEntitySwitchFileTableNameProvider();
     }
 
 }

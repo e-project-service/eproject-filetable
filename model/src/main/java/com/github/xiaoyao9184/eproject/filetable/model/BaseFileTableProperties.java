@@ -14,6 +14,7 @@ public class BaseFileTableProperties {
      * @see com.github.xiaoyao9184.eproject.filetable.core.FileSystemFileTableHandler
      */
     private String mappingPath;
+    private MappingLocation mappingLocation;
 
     private String rootPath;
     private String servername;
@@ -22,6 +23,8 @@ public class BaseFileTableProperties {
     private String username;
     private String password;
     private String domain = "WORKGROUP";
+
+    private boolean autoCreateDirectory = false;
 
     private Map<Operator,OperatorMethod> operatorMethods;
 
@@ -32,6 +35,14 @@ public class BaseFileTableProperties {
 
     public void setMappingPath(String mappingPath) {
         this.mappingPath = mappingPath;
+    }
+
+    public MappingLocation getMappingLocation() {
+        return mappingLocation;
+    }
+
+    public void setMappingLocation(MappingLocation mappingLocation) {
+        this.mappingLocation = mappingLocation;
     }
 
     public String getRootPath() {
@@ -95,6 +106,14 @@ public class BaseFileTableProperties {
         this.domain = domain;
     }
 
+    public boolean isAutoCreateDirectory() {
+        return autoCreateDirectory;
+    }
+
+    public void setAutoCreateDirectory(boolean autoCreateDirectory) {
+        this.autoCreateDirectory = autoCreateDirectory;
+    }
+
     public Map<Operator, OperatorMethod> getOperatorMethods() {
         return operatorMethods;
     }
@@ -108,11 +127,24 @@ public class BaseFileTableProperties {
         READ_STREAM,
         READ,
 
-        DELETE
+        DELETE,
+
+        RENAME,
+
+        SEARCH
     }
 
     public enum OperatorMethod {
         DATABASE,
         FILE
+    }
+
+    public enum MappingLocation {
+        //TODO make sure
+        //Windows cant mapping server
+        @Deprecated
+        SERVER,
+        INSTANCE,
+        DATABASE
     }
 }
