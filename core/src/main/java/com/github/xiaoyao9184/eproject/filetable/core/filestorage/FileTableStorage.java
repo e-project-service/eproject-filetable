@@ -42,23 +42,7 @@ public class FileTableStorage implements FileStorage<URI>, FileInfoStorage<URI, 
 
     @Override
     public boolean storageFile(Optional<FilePointer> filePointer, URI uri) {
-        return filePointer
-                .map(p -> {
-                    try {
-                        return fileTableService.create(p.open(),uri) != null;
-                    } catch (Exception e) {
-                        logger.error("Cant storage file!", e);
-                    }
-                    return false;
-                })
-                .orElseGet(() -> {
-                    try {
-                        return fileTableService.create(uri) != null;
-                    } catch (Exception e) {
-                        logger.error("Cant storage empty file!", e);
-                    }
-                    return false;
-                });
+        return this.storageInfo(filePointer, uri) != null;
     }
 
     @Override
@@ -109,7 +93,7 @@ public class FileTableStorage implements FileStorage<URI>, FileInfoStorage<URI, 
                     try {
                         return fileTableService.create(uri);
                     } catch (Exception e) {
-                        logger.error("Cant storage empty filetable file!", e);
+                        logger.error("Cant storage filetable directory!", e);
                     }
                     return null;
                 });
