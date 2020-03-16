@@ -106,7 +106,7 @@ public class FileSystemFileTableHandler implements FileTableHandler {
         AbstractFileTable a = new DefaultFileTable();
         a.setName(name);
         a.setFile_namespace_path(fileNamespacePath);
-        a.setCached_file_size(size);
+        a.setCached_file_size(copySize);
         a.setFile_type(FilenameUtils.getExtension(name));
         a.setCreation_time(time);
         a.setLast_access_time(time);
