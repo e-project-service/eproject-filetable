@@ -4,9 +4,7 @@ import com.github.xiaoyao9184.eproject.filestorage.core.FileInfoStorage;
 import com.github.xiaoyao9184.eproject.filestorage.core.FilePointer;
 import com.github.xiaoyao9184.eproject.filestorage.core.FileStorage;
 import com.github.xiaoyao9184.eproject.filestorage.core.MultipartFilePointer;
-import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
 import com.github.xiaoyao9184.eproject.filetable.model.FileInfo;
-import com.github.xiaoyao9184.eproject.filetable.service.FileTableService;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,8 +57,9 @@ public class FileInfoController {
      * @param path
      * @return
      */
-    private FilePointer createFilePointer(MultipartFile multipartFile, URI path) {
-        return new MultipartFilePointer(path, multipartFile);
+    private Optional<FilePointer> createFilePointer(MultipartFile multipartFile, URI path) {
+        return Optional.ofNullable(multipartFile)
+                .map(file -> new MultipartFilePointer(path, file));
     }
 
     @ApiOperation(
