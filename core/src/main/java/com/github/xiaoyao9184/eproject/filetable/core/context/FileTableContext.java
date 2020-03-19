@@ -49,5 +49,17 @@ public class FileTableContext extends ConcurrentHashMap<String, Object> {
 
         return context;
     }
+
+    static ThreadLocal<FileTableContext> contextThreadLocal = new ThreadLocal<>();
+
+    public static FileTableContext createThread(){
+        FileTableContext context = create();
+        contextThreadLocal.set(context);
+        return context;
+    }
+
+    public static FileTableContext createOrFromThread() {
+        return contextThreadLocal.get() == null ? create() : contextThreadLocal.get();
+    }
 }
 

@@ -74,7 +74,7 @@ public abstract class FileTableConvertibleStorage<FILE_INFO>
     @Override
     public List<FILE_INFO> searchInfo(URI uri, String search) {
         try {
-            FileTableContext context = FileTableContext.create()
+            FileTableContext context = FileTableContext.createOrFromThread()
                     .withBase(uri);
 
             return fileTableService.search(uri, search)
@@ -89,7 +89,7 @@ public abstract class FileTableConvertibleStorage<FILE_INFO>
 
     @Override
     public FILE_INFO storageInfo(Optional<FilePointer> filePointer, URI uri) {
-        FileTableContext context = FileTableContext.create()
+        FileTableContext context = FileTableContext.createOrFromThread()
                 .withURL(uri);
         return filePointer
                 .map(p -> {
@@ -115,7 +115,7 @@ public abstract class FileTableConvertibleStorage<FILE_INFO>
     @Override
     public List<FILE_INFO> listInfo(URI uri) {
         try {
-            FileTableContext context = FileTableContext.create()
+            FileTableContext context = FileTableContext.createOrFromThread()
                     .withBase(uri);
             return fileTableService.readChild(uri)
                     .stream()
@@ -130,7 +130,7 @@ public abstract class FileTableConvertibleStorage<FILE_INFO>
     @Override
     public FILE_INFO findInfo(URI uri) {
         try {
-            FileTableContext context = FileTableContext.create()
+            FileTableContext context = FileTableContext.createOrFromThread()
                     .withURL(uri);
             AbstractFileTable aft = fileTableService.read(uri);
             return converter.convert(aft,context);
