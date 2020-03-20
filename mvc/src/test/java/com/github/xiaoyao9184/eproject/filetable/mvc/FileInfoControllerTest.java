@@ -3,15 +3,20 @@ package com.github.xiaoyao9184.eproject.filetable.mvc;
 import com.github.xiaoyao9184.eproject.filestorage.core.FileInfoStorage;
 import com.github.xiaoyao9184.eproject.filestorage.core.FilePointer;
 import com.github.xiaoyao9184.eproject.filestorage.core.FileStorage;
+import com.github.xiaoyao9184.eproject.filestorage.core.MultipartFilePointer;
 import com.github.xiaoyao9184.eproject.filetable.*;
 import com.github.xiaoyao9184.eproject.filetable.entity.TestFileTable;
 import com.github.xiaoyao9184.eproject.filetable.model.FileInfo;
+import com.github.xiaoyao9184.eproject.filetable.service.FileTableService;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.mockito.ArgumentMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -33,8 +39,12 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by xy on 2020/1/15.
@@ -43,14 +53,8 @@ import java.util.Optional;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(
         classes = {
-                PropertiesConfiguration.class,
-                FileSystemHandlerConfiguration.class,
-                DataBaseHandlerConfiguration.class,
-                MssqlConfig.class,
                 BootMvcConfiguration.class }
 )
-@TestPropertySource(locations = "classpath:filetable-mixing-localhost.properties")
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FileInfoControllerTest {
 
     @LocalServerPort
@@ -60,47 +64,13 @@ public class FileInfoControllerTest {
     private TestRestTemplate restTemplate;
 
     @MockBean
+    private FileStorage<URI> infoFileStorage;
+
+    @MockBean
     private FileInfoStorage<URI,FileInfo> infoFileInfoStorage;
 
-    private FilePointer filePointer;
-
-    @Before
-    public void initFile(){
-        filePointer = new FilePointer() {
-            @Override
-            public InputStream open() throws Exception {
-                return new ByteArrayInputStream(new byte[]{0x0D});
-            }
-
-            @Override
-            public long getSize() {
-                return 1;
-            }
-
-            @Override
-            public String getOriginalName() {
-                return "unit_test_file";
-            }
-
-            @Override
-            public String getEtag() {
-                return "null";
-            }
-
-            @Override
-            public Optional<com.google.common.net.MediaType> getMediaType() {
-                return Optional.empty();
-            }
-
-            @Override
-            public Instant getLastModified() {
-                return Instant.now();
-            }
-        };
-    }
-
     @Test
-    public void test_01_add() throws IOException {
+    public void test_add() throws IOException {
         Path tempFile = Files.createTempFile("upload-test-file", ".txt");
         Files.write(tempFile, "some test content...\nline1\nline2".getBytes());
 
@@ -117,119 +87,74 @@ public class FileInfoControllerTest {
         HttpEntity<MultiValueMap<String, Object>> requestEntity
                 = new HttpEntity<>(body, headers);
 
+        FileInfo fi = new FileInfo();
+        fi.setPath("new_dir/new_txt.txt");
+        when(infoFileInfoStorage.storageInfo(any(),any()))
+                .thenReturn(fi);
+
         ResponseEntity<FileInfo> res1 = this.restTemplate.postForEntity(
                 "http://localhost:" + port + "/v1/file-infos/new_dir/new_txt.txt",
                 requestEntity,
                 FileInfo.class);
 
-        Assert.assertEquals(res1.getStatusCodeValue(), HttpStatus.CREATED.value());
         Assert.assertNotNull(res1.getBody());
-        Assert.assertEquals(res1.getBody().getPath(), "/" + TestFileTable.TABLE_NAME + "/new_dir/new_txt.txt");
-        Assert.assertEquals(res1.getBody().getSize().intValue(), 32);
-
-        //add deep file with auto create dir
-        ResponseEntity<FileInfo> res2 = this.restTemplate.postForEntity(
-                "http://localhost:" + port + "/v1/files/new_dir/2/new_txt.txt",
-                requestEntity,
-                FileInfo.class);
-
-        Assert.assertEquals(res2.getStatusCodeValue(), HttpStatus.CREATED.value());
-        Assert.assertNotNull(res2.getBody());
-        Assert.assertEquals(res2.getBody().getPath(), "/" + TestFileTable.TABLE_NAME + "/new_dir/2/new_txt.txt");
-        Assert.assertEquals(res2.getBody().getSize().intValue(), 32);
-
-        //add dir
-        ResponseEntity<FileInfo> res3 = this.restTemplate.postForEntity(
-                "http://localhost:" + port + "/v1/files/new_dir/3",
-                null,
-                FileInfo.class);
-
-        Assert.assertEquals(res3.getStatusCodeValue(), HttpStatus.CREATED.value());
-        Assert.assertNotNull(res3.getBody());
-        Assert.assertEquals(res3.getBody().getPath(), "/" + TestFileTable.TABLE_NAME + "/new_dir/3");
-        Assert.assertNull(res3.getBody().getSize());
+        Assert.assertEquals(res1.getStatusCodeValue(), HttpStatus.CREATED.value());
+        Assert.assertEquals(res1.getBody().getPath(), fi.getPath());
     }
 
     @Test
-    public void test_02_delete() {
+    public void test_delete() {
+        when(infoFileStorage.delete(URI.create("new_dir/new_txt.txt")))
+                .thenReturn(false);
+
         ResponseEntity<Void> res1 = this.restTemplate.exchange(
-                "http://localhost:" + port + "/v1/files/new_dir/new_txt.txt",
+                "http://localhost:" + port + "/v1/file-infos/new_dir/new_txt.txt",
                 HttpMethod.DELETE,
                 null,
                 Void.class);
 
         Assert.assertNull(res1.getBody());
         Assert.assertEquals(res1.getStatusCodeValue(), HttpStatus.ACCEPTED.value());
-
-        //
-        ResponseEntity<Void> res2 = this.restTemplate.exchange(
-                "http://localhost:" + port + "/v1/files/new_dir/2/new_txt.txt",
-                HttpMethod.DELETE,
-                null,
-                Void.class);
-
-        Assert.assertNull(res2.getBody());
-        Assert.assertEquals(res2.getStatusCodeValue(), HttpStatus.ACCEPTED.value());
-
-        //
-        ResponseEntity<Void> res3 = this.restTemplate.exchange(
-                "http://localhost:" + port + "/v1/files/new_dir/2",
-                HttpMethod.DELETE,
-                null,
-                Void.class);
-
-        Assert.assertNull(res3.getBody());
-        Assert.assertEquals(res3.getStatusCodeValue(), HttpStatus.ACCEPTED.value());
-
-        //delete dir
-        ResponseEntity<Void> res4 = this.restTemplate.exchange(
-                "http://localhost:" + port + "/v1/files/new_dir/3",
-                HttpMethod.DELETE,
-                null,
-                Void.class);
-
-        Assert.assertNull(res4.getBody());
-        Assert.assertEquals(res4.getStatusCodeValue(), HttpStatus.ACCEPTED.value());
     }
 
     @Test
-    public void test_03_get() {
+    public void test_get() {
+        FileInfo fi = new FileInfo();
+        fi.setPath("new_dir/new_txt.txt");
+        when(infoFileInfoStorage.findInfo(argThat(new ArgumentMatcher<URI>() {
+            @Override
+            public boolean matches(Object o) {
+                return ((URI)o).getPath().equals("/" + fi.getPath());
+            }
+        })))
+                .thenReturn(fi);
+
         ResponseEntity<FileInfo> res1 = this.restTemplate.getForEntity(
-                "http://localhost:" + port + "/v1/files/new_dir/new_image.bmp",
+                "http://localhost:" + port + "/v1/file-infos/new_dir/new_txt.txt",
                 FileInfo.class);
 
         Assert.assertEquals(res1.getStatusCodeValue(), HttpStatus.OK.value());
         Assert.assertNotNull(res1.getBody());
-        Assert.assertEquals(res1.getBody().getPath(), "/new_dir/new_image.bmp");
-        Assert.assertEquals(res1.getBody().getSize().intValue(), 0);
+        Assert.assertEquals(res1.getBody().getPath(), fi.getPath());
 
-        ResponseEntity<FileInfo> res2 = this.restTemplate.getForEntity(
-                "http://localhost:" + port + "/v1/files/new_text.txt",
-                FileInfo.class);
 
-        Assert.assertEquals(res2.getStatusCodeValue(), HttpStatus.OK.value());
-        Assert.assertNotNull(res2.getBody());
-        Assert.assertEquals(res2.getBody().getPath(), "/new_text.txt");
-        Assert.assertEquals(res2.getBody().getSize().intValue(), 3);
-    }
-
-    @Test
-    public void test_04_get_child() {
-        ResponseEntity<List> res1 = this.restTemplate.getForEntity(
-                "http://localhost:" + port + "/v1/files/new_dir/",
-                List.class);
-
-        Assert.assertEquals(res1.getStatusCodeValue(), HttpStatus.OK.value());
-        Assert.assertNotNull(res1.getBody());
-        Assert.assertEquals(res1.getBody().size(), 1);
+        List<FileInfo> fis = new ArrayList<>();
+        fis.add(fi);
+        when(infoFileInfoStorage.listInfo(argThat(new ArgumentMatcher<URI>() {
+            @Override
+            public boolean matches(Object o) {
+                return ((URI)o).getPath().equals("");
+            }
+        })))
+                .thenReturn(fis);
 
         ResponseEntity<List> res2 = this.restTemplate.getForEntity(
-                "http://localhost:" + port + "/v1/files/",
+                "http://localhost:" + port + "/v1/file-infos/",
                 List.class);
 
         Assert.assertEquals(res2.getStatusCodeValue(), HttpStatus.OK.value());
         Assert.assertNotNull(res2.getBody());
-        Assert.assertTrue(res2.getBody().size() >= 3);
+        Assert.assertEquals(res2.getBody().size(), 1);
     }
 
 }

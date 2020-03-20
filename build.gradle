@@ -293,6 +293,11 @@ project(':eproject-filetable-mvc') {
         //boot
         testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
         testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+        //DB
+        testCompile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.4.1.jre8'
+        testCompile group: 'c3p0', name: 'c3p0', version:'0.9.1.2'
+        testCompile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.12.Final'
+        testCompile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.0.12.Final'
     }
 
 }

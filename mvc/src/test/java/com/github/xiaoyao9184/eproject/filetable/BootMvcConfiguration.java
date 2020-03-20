@@ -1,10 +1,7 @@
 package com.github.xiaoyao9184.eproject.filetable;
 
-import com.github.xiaoyao9184.eproject.filetable.core.handle.ConfigurationFileTableHandler;
-import com.github.xiaoyao9184.eproject.filetable.core.handle.FileTableHandler;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
@@ -31,10 +28,5 @@ public class BootMvcConfiguration extends WebMvcConfigurerAdapter
                 defaultContentType(MediaType.APPLICATION_JSON);
     }
 
-
-    @Bean
-    public FileTableHandler fileTableHandler(){
-        return new ConfigurationFileTableHandler();
-    }
 
 }
