@@ -86,16 +86,16 @@ public class FileTableStorage implements FileStorage<URI>, FileInfoStorage<URI, 
                         return fileTableService.create(p.open(),uri);
                     } catch (Exception e) {
                         logger.error("Cant create filetable file!", e);
+                        throw new RuntimeException(e);
                     }
-                    return null;
                 })
                 .orElseGet(() -> {
                     try {
                         return fileTableService.create(uri);
                     } catch (Exception e) {
                         logger.error("Cant storage filetable directory!", e);
+                        throw new RuntimeException(e);
                     }
-                    return null;
                 });
     }
 

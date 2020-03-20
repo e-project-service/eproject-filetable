@@ -98,8 +98,8 @@ public abstract class FileTableConvertibleStorage<FILE_INFO>
                         return converter.convert(aft,context);
                     } catch (Exception e) {
                         logger.error("Cant create filetable file!", e);
+                        throw new RuntimeException(e);
                     }
-                    return null;
                 })
                 .orElseGet(() -> {
                     try {
@@ -107,8 +107,8 @@ public abstract class FileTableConvertibleStorage<FILE_INFO>
                         return converter.convert(aft,context);
                     } catch (Exception e) {
                         logger.error("Cant create filetable directory!", e);
+                        throw new RuntimeException(e);
                     }
-                    return null;
                 });
     }
 
