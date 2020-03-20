@@ -4,7 +4,6 @@ import com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProvider;
 import com.github.xiaoyao9184.eproject.filetable.core.FileTableRepositoryProvider;
 import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
 import com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties;
-import com.github.xiaoyao9184.eproject.filetable.repository.AbstractFileTableRepository;
 import com.github.xiaoyao9184.eproject.filetable.repository.FileTableRepository;
 import com.github.xiaoyao9184.eproject.filetable.util.URIUtil;
 import org.jooq.lambda.tuple.Tuple2;
@@ -79,64 +78,24 @@ public class DatabaseFileTableHandler implements FileTableHandler {
 
     @Override
     public InputStream readStream(URI uri) throws Exception {
-        URI fileNamespacePathUri = UriComponentsBuilder.newInstance()
-                .path(fileTableNameProvider.provide())
-                .path(uri.getPath())
-                .build()
-                .toUri();
-        String fileNamespacePath = "\\" +
-                fileNamespacePathUri.getPath().replace("/","\\");
+        String fileNamespacePath = toFileNamespacePath(uri);
+
         return fileTableRepository.getBlobByPath(fileNamespacePath)
                 .getBinaryStream();
     }
 
     @Override
     public byte[] readBytes(URI uri) throws Exception {
-        URI fileNamespacePathUri = UriComponentsBuilder.newInstance()
-                .path(fileTableNameProvider.provide())
-                .path(uri.getPath())
-                .build()
-                .toUri();
-        String fileNamespacePath = "\\" +
-                fileNamespacePathUri.getPath().replace("/","\\");
+        String fileNamespacePath = toFileNamespacePath(uri);
+
         return fileTableRepository.getBytesByPath(fileNamespacePath);
     }
 
     @Override
     public AbstractFileTable read(URI uri) throws Exception {
-        URI fileNamespacePathUri = UriComponentsBuilder.newInstance()
-                .path(fileTableNameProvider.provide())
-                .path(uri.getPath())
-                .build()
-                .toUri();
-        String fileNamespacePath = "\\" +
-                fileNamespacePathUri.getPath().replace("/","\\");
+        String fileNamespacePath = toFileNamespacePath(uri);
 
         return fileTableRepository.getByPath(fileNamespacePath);
-
-//        URI base = UriComponentsBuilder.fromUriString(
-//                "smb:" +
-//                fileTableProperties.getRootPath()
-//                        .replace("\\","/")
-//        )
-//                .build()
-//                .toUri();
-//        String location = fileTableProperties.getDatabase() + "/" +
-//                aft.getFile_namespace_path()
-//                        .replace(aft.getName(),"")
-//                        .replace("\\","/");
-//
-//        AbstractFileTable a = new AbstractFileTable();
-//        a.setId(uri.toString());
-//        a.setNode(base.getHost());
-//        a.setGroup(fileTableProperties.getInstance());
-//        a.setLocation(location);
-//        a.setName(aft.getName());
-//        a.setSize(aft.getCached_file_size());
-//        a.setTime(aft.getCreation_time());
-//        a.setStatus(AttachStatus.Permanent);
-//        a.setType(AttachType.File);
-//        return a;
     }
 
     /**
@@ -147,19 +106,60 @@ public class DatabaseFileTableHandler implements FileTableHandler {
      */
     @Override
     public boolean delete(URI uri) throws Exception {
-        URI fileNamespacePathUri = UriComponentsBuilder.newInstance()
-                .path(fileTableNameProvider.provide())
-                .path(uri.getPath())
-                .build()
-                .toUri();
-        String fileNamespacePath = "\\" +
-                fileNamespacePathUri.getPath().replace("/","\\");
+        String fileNamespacePath = toFileNamespacePath(uri);
 
         return fileTableRepository.deleteByPath(fileNamespacePath) == 1;
     }
 
     @Override
     public List<AbstractFileTable> readChild(URI uri) throws Exception {
+        if(uri.getPath().length() == 0 ||
+                "/".equals(uri.getPath())){
+            return fileTableRepository.getChildByRootLocator();
+        }else{
+            String fullFileNamespacePath = toFullFileNamespacePath(uri);
+
+            return fileTableRepository.getChildByPathLocator(fullFileNamespacePath);
+        }
+    }
+
+    @Override
+    public boolean rename(URI uri, String name){
+        String fullFileNamespacePath = toFullFileNamespacePath(uri);
+
+        return fileTableRepository.updateNameByPathLocator(fullFileNamespacePath,name) == 1;
+    }
+
+    @Override
+    public List<AbstractFileTable> search(URI uri, String search) {
+        String fileNamespacePath = toFileNamespacePath(uri);
+
+        return fileTableRepository.findByFileNamespacePathStartsWithAndNameContains(fileNamespacePath,search);
+    }
+
+
+    /**
+     * file namespace path is \table-name\{uri}
+     * @param uri
+     * @return
+     */
+    private String toFileNamespacePath(URI uri){
+        URI fileNamespacePathUri = UriComponentsBuilder.newInstance()
+                .path(fileTableNameProvider.provide())
+                .path(uri.getPath())
+                .build()
+                .toUri();
+        return "\\" +
+                fileNamespacePathUri.getPath().replace("/","\\");
+    }
+
+    /**
+     * full file namespace path is \\servername\instance-share\database-directory\FileTable-directory\{uri}
+     * it can transform PathLocator
+     * @param uri
+     * @return
+     */
+    private String toFullFileNamespacePath(URI uri){
         //use root because maybe servername use ip
         //and SQLServer use hostname
         URI base = UriComponentsBuilder.fromUriString(
@@ -170,78 +170,57 @@ public class DatabaseFileTableHandler implements FileTableHandler {
                 .build()
                 .toUri();
 
-        if(uri.getPath().length() == 0 ||
-                "/".equals(uri.getPath())){
+        //path locator is full path with smb share path
+        URI fullFileNamespacePathUri = UriComponentsBuilder.fromUri(base)
+                .pathSegment(fileTableNameProvider.provide())
+                .path(uri.toString())
+                .build()
+                .toUri();
+        String fullFileNamespacePath = "\\\\" +
+                fullFileNamespacePathUri.getHost() +
+                fullFileNamespacePathUri.getPath().replace("/","\\");
 
-            return fileTableRepository.getChildByRootLocator();
-//            return list
-//                    .stream()
-//                    .map(aft -> {
-//                        String location = fileTableProperties.getDatabase() + "/" +
-//                                aft.getFile_namespace_path()
-//                                        .replace(aft.getName(),"")
-//                                        .replace("\\","/");
-//
-//                        AbstractFileTable a = new AbstractFileTable();
-//                        a.setId(uri.toString() + "/" + aft.getName());
-//                        a.setNode(base.getHost());
-//                        a.setGroup(fileTableProperties.getInstance());
-//                        a.setLocation(location);
-//                        a.setName(aft.getName());
-//                        a.setSize(aft.getCached_file_size());
-//                        a.setTime(aft.getCreation_time());
-//                        a.setStatus(AttachStatus.Permanent);
-//                        a.setType(AttachType.File);
-//                        return a;
-//                    })
-//                    .collect(Collectors.toList());
-        }else{
-            //path locator is full path with smb share path
-            URI fullFileNamespacePathUri = UriComponentsBuilder.fromUri(base)
-                    .pathSegment(fileTableNameProvider.provide())
-                    .path(uri.toString())
+        //PathLocator Not included last '/'
+        if(fullFileNamespacePath.endsWith("/")){
+            fullFileNamespacePath = fullFileNamespacePath.substring(0,fullFileNamespacePath.length() - 1);
+        }
+
+        return fullFileNamespacePath;
+    }
+
+    private String makeDirectoryRecursion(URI uri) throws FileNotFoundException {
+        Tuple2<String,String> pathName = URIUtil.separatePathAndNameFromURI(uri);
+
+        //default is root
+        String parentDirectoryPathLocator = "/";
+        if(!StringUtils.isEmpty(pathName.v1())) {
+            URI fileNamespacePathUri = UriComponentsBuilder.newInstance()
+                    .path(fileTableNameProvider.provide())
+                    .path(pathName.v1())
                     .build()
                     .toUri();
-            String fullFileNamespacePath = "\\\\" +
-                    fullFileNamespacePathUri.getHost() +
-                    fullFileNamespacePathUri.getPath().replace("/","\\");
-
-            //PathLocator Not included last '/'
-            if(fullFileNamespacePath.endsWith("/")){
-                fullFileNamespacePath = fullFileNamespacePath.substring(0,fullFileNamespacePath.length() - 1);
-            }
-
-            return fileTableRepository.getChildByPathLocator(fullFileNamespacePath);
-//            return list
-//                    .stream()
-//                    .map(aft -> {
-//                        String location = fileTableProperties.getDatabase() + "/" +
-//                                aft.getFile_namespace_path()
-//                                        .replace(aft.getName(),"")
-//                                        .replace("\\","/");
-//
-//                        AbstractFileTable a = new AbstractFileTable();
-//                        a.setId(uri.toString() + "/" + aft.getName());
-//                        a.setNode(base.getHost());
-//                        a.setGroup(fileTableProperties.getInstance());
-//                        a.setLocation(location);
-//                        a.setName(aft.getName());
-//                        a.setSize(aft.getCached_file_size());
-//                        a.setTime(aft.getCreation_time());
-//                        a.setStatus(AttachStatus.Permanent);
-//                        a.setType(AttachType.File);
-//                        return a;
-//                    })
-//                    .collect(Collectors.toList());
+            String fileNamespacePath = "\\" +
+                    fileNamespacePathUri.getPath().replace("/","\\");
+            parentDirectoryPathLocator = fileTableRepository.getPathLocatorStringByPath(fileNamespacePath);
         }
+
+        if(parentDirectoryPathLocator == null &&
+                fileTableProperties.isAutoCreateDirectory()){
+            URI pUri = UriComponentsBuilder.fromUriString(pathName.v1()).build().toUri();
+            parentDirectoryPathLocator = makeDirectoryRecursion(pUri);
+        }else if(parentDirectoryPathLocator == null) {
+            throw new FileNotFoundException("Parent directory not exist: " + pathName.v1());
+        }
+
+        String pathLocator = parentDirectoryPathLocator
+                + uuidToHierarchyIdNodeString(UUID.randomUUID());
+
+        assert fileTableRepository.insertDirectoryByNameAndPathLocator(pathLocator,pathName.v2()) == 1;
+
+        return pathLocator;
     }
 
-    @Override
-    public boolean rename(URI uri, String name){
-        String fullFileNamespacePath = getFullFileNamespacePathByURI(uri);
 
-        return fileTableRepository.updateNameByPathLocator(fullFileNamespacePath,name) == 1;
-    }
 
     public boolean makeFile(URI uri) throws FileNotFoundException {
         Tuple2<String,String> pathName = URIUtil.separatePathAndNameFromURI(uri);
@@ -312,105 +291,4 @@ public class DatabaseFileTableHandler implements FileTableHandler {
 
         return fileTableRepository.insertDirectoryByNameAndPathLocator(pathLocator,pathName.v2()) == 1;
     }
-
-    public List<AbstractFileTable> search(URI uri, String search) {
-        URI base = UriComponentsBuilder.fromUriString(
-                "smb:" + fileTableProperties.getRootPath().replace("\\","/")
-        )
-                .build()
-                .toUri();
-
-        URI fileNamespacePathUri = UriComponentsBuilder.newInstance()
-                .path(fileTableNameProvider.provide())
-                .path(uri.getPath())
-                .build()
-                .toUri();
-        String fileNamespacePath = "\\" +
-                fileNamespacePathUri.getPath().replace("/","\\");
-
-        return fileTableRepository.findByFileNamespacePathStartsWithAndNameContains(fileNamespacePath,search);
-//        return list
-//                .stream()
-//                .map(aft -> {
-//                    String location = fileTableProperties.getDatabase() + "/" +
-//                            aft.getFile_namespace_path()
-//                                    .replace(aft.getName(),"")
-//                                    .replace("\\","/");
-//
-//                    AbstractFileTable a = new AbstractFileTable();
-//                    a.setId(uri.toString() + "/" + aft.getName());
-//                    a.setNode(base.getHost());
-//                    a.setGroup(fileTableProperties.getInstance());
-//                    a.setLocation(location);
-//                    a.setName(aft.getName());
-//                    a.setSize(aft.getCached_file_size());
-//                    a.setTime(aft.getCreation_time());
-//                    a.setStatus(AttachStatus.Permanent);
-//                    a.setType(AttachType.File);
-//                    return a;
-//                })
-//                .collect(Collectors.toList());
-    }
-
-    private String getFullFileNamespacePathByURI(URI uri){
-        //use root because maybe servername use ip
-        //and SQLServer use hostname
-        URI base = UriComponentsBuilder.fromUriString(
-                "smb:" +
-                        fileTableProperties.getRootPath()
-                                .replace("\\","/")
-        )
-                .build()
-                .toUri();
-
-        //path locator is full path with smb share path
-        URI fullFileNamespacePathUri = UriComponentsBuilder.fromUri(base)
-                .pathSegment(fileTableNameProvider.provide())
-                .path(uri.toString())
-                .build()
-                .toUri();
-        String fullFileNamespacePath = "\\\\" +
-                fullFileNamespacePathUri.getHost() +
-                fullFileNamespacePathUri.getPath().replace("/","\\");
-
-        //PathLocator Not included last '/'
-        if(fullFileNamespacePath.endsWith("/")){
-            fullFileNamespacePath = fullFileNamespacePath.substring(0,fullFileNamespacePath.length() - 1);
-        }
-
-        return fullFileNamespacePath;
-    }
-
-    private String makeDirectoryRecursion(URI uri) throws FileNotFoundException {
-        Tuple2<String,String> pathName = URIUtil.separatePathAndNameFromURI(uri);
-
-        //default is root
-        String parentDirectoryPathLocator = "/";
-        if(!StringUtils.isEmpty(pathName.v1())) {
-            URI fileNamespacePathUri = UriComponentsBuilder.newInstance()
-                    .path(fileTableNameProvider.provide())
-                    .path(pathName.v1())
-                    .build()
-                    .toUri();
-            String fileNamespacePath = "\\" +
-                    fileNamespacePathUri.getPath().replace("/","\\");
-            parentDirectoryPathLocator = fileTableRepository.getPathLocatorStringByPath(fileNamespacePath);
-        }
-
-        if(parentDirectoryPathLocator == null &&
-                fileTableProperties.isAutoCreateDirectory()){
-            URI pUri = UriComponentsBuilder.fromUriString(pathName.v1()).build().toUri();
-            parentDirectoryPathLocator = makeDirectoryRecursion(pUri);
-        }else if(parentDirectoryPathLocator == null) {
-            throw new FileNotFoundException("Parent directory not exist: " + pathName.v1());
-        }
-
-        String pathLocator = parentDirectoryPathLocator
-                + uuidToHierarchyIdNodeString(UUID.randomUUID());
-
-        assert fileTableRepository.insertDirectoryByNameAndPathLocator(pathLocator,pathName.v2()) == 1;
-
-        return pathLocator;
-    }
-
 }

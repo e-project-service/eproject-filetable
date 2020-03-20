@@ -71,7 +71,6 @@ public class FileSystemFileTableHandler implements FileTableHandler {
      */
     private AbstractFileTable create(InputStream stream, String path, String name, Long size, Date time) throws Exception {
         //filesystem file path is mapping\database-directory\FileTable-directory\{file}
-
         URI uri = fileTableLocalhostMappingBuilder.build()
                 .pathSegment(fileTableNameProvider.provide())
                 .path(path)
@@ -81,7 +80,9 @@ public class FileSystemFileTableHandler implements FileTableHandler {
 
         File file = new File(uri);
 
-        boolean dirOk = file.getParentFile().mkdirs();
+        if(fileTableProperties.isAutoCreateDirectory()){
+            boolean dirOk = file.getParentFile().mkdirs();
+        }
 
         Long copySize;
         try(
@@ -126,12 +127,12 @@ public class FileSystemFileTableHandler implements FileTableHandler {
         String path = uri.toString();
         String name = multipartFile.getOriginalFilename();
         if(!uri.toString().endsWith("/")){
-            Tuple2<String,String> pn = separatePathAndNameFromURI(uri);
-            if(pn.v2.contains(".")){
+            Tuple2<String,String> path_name = separatePathAndNameFromURI(uri);
+            if(path_name.v2.contains(".")){
                 // uri is full path contain file name
-                logger.info("File {} create with new name {}.", multipartFile.getOriginalFilename(), pn.v2);
-                path = pn.v1();
-                name = pn.v2();
+                logger.info("File {} create with new name {}.", multipartFile.getOriginalFilename(), path_name.v2);
+                path = path_name.v1();
+                name = path_name.v2();
             }
         }
 
@@ -148,12 +149,12 @@ public class FileSystemFileTableHandler implements FileTableHandler {
         String path = uri.toString();
         String name = file.getName();
         if(!uri.toString().endsWith("/")){
-            Tuple2<String,String> pn = separatePathAndNameFromURI(uri);
-            if(pn.v2.contains(".")){
+            Tuple2<String,String> path_name = separatePathAndNameFromURI(uri);
+            if(path_name.v2.contains(".")){
                 // uri is full path contain file name
-                logger.info("File {} create with new name {}.", file.getName(), pn.v2);
-                path = pn.v1();
-                name = pn.v2();
+                logger.info("File {} create with new name {}.", file.getName(), path_name.v2);
+                path = path_name.v1();
+                name = path_name.v2();
             }
         }
 
@@ -168,12 +169,12 @@ public class FileSystemFileTableHandler implements FileTableHandler {
 
     @Override
     public AbstractFileTable create(InputStream stream, URI uri) throws Exception {
-        Tuple2<String,String> pn = separatePathAndNameFromURI(uri);
+        Tuple2<String,String> path_name = separatePathAndNameFromURI(uri);
 
         return create(
                 stream,
-                pn.v1,
-                pn.v2,
+                path_name.v1,
+                path_name.v2,
                 null,
                 new Date());
     }
@@ -199,7 +200,7 @@ public class FileSystemFileTableHandler implements FileTableHandler {
         }
 
         Date time = new Date();
-        Tuple2<String,String> pn = separatePathAndNameFromURI(uri);
+        Tuple2<String,String> path_name = separatePathAndNameFromURI(uri);
         String fileNamespacePath = FileTablePathBuilder.newInstance()
                 .uri()
                 .pathSegment(fileTableNameProvider.provide())
@@ -209,7 +210,7 @@ public class FileSystemFileTableHandler implements FileTableHandler {
                 .toWinString();
 
         AbstractFileTable a = new DefaultFileTable();
-        a.setName(pn.v2());
+        a.setName(path_name.v2());
         a.setFile_namespace_path(fileNamespacePath);
         a.setCached_file_size(null);
         a.setFile_type(null);
@@ -267,7 +268,7 @@ public class FileSystemFileTableHandler implements FileTableHandler {
 
         BasicFileAttributes attributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
 
-        Tuple2<String,String> pn = separatePathAndNameFromURI(uri);
+        Tuple2<String,String> path_name = separatePathAndNameFromURI(uri);
         String fileNamespacePath = FileTablePathBuilder.newInstance()
                 .uri()
                 .pathSegment(fileTableNameProvider.provide())
@@ -277,7 +278,7 @@ public class FileSystemFileTableHandler implements FileTableHandler {
                 .toWinString();
 
         AbstractFileTable a = new DefaultFileTable();
-        a.setName(pn.v2());
+        a.setName(path_name.v2());
         a.setFile_namespace_path(fileNamespacePath);
         a.setCached_file_size(file.length());
         a.setFile_type(null);

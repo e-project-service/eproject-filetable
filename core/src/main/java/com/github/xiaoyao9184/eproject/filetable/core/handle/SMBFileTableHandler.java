@@ -18,6 +18,7 @@ import com.hierynomus.smbj.session.Session;
 import com.hierynomus.smbj.share.DiskShare;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,30 +100,62 @@ public class SMBFileTableHandler implements FileTableHandler {
     }
 
     /**
-     * FileTable full path format
-     * \\servername\instance-share\database-directory\FileTable-directory
-     *
-     * @param stream
-     * @param path
-     * @param name
-     * @param size
-     * @param time
+     * smb FileTable path format \\servername\instance-share\database-directory\FileTable-directory
+     * smb file path is database-directory\FileTable-directory\{pathName}
+     * @param pathName
      * @return
-     * @throws Exception
      */
-    private AbstractFileTable create(InputStream stream, String path, String name, Long size, Date time) throws Exception {
-        //smb file path is database-directory\FileTable-directory\{file}
+    private Tuple2<String,String> toSmbPathWithParentPath(Tuple2<String,String> pathName){
         String filePath = UriComponentsBuilder.newInstance()
                 .path(fileTableProperties.getDatabase())
                 .pathSegment(fileTableNameProvider.provide())
-                .path(path)
+                .path(pathName.v1())
                 .toUriString();
-        String fileName = filePath.replace("/", "\\")
-                + "\\"
-                + name;
+        filePath = filePath.replace("/", "\\");
+        String fileName = filePath + "\\" + pathName.v2();
+
+        return Tuple.tuple(fileName,filePath);
+    }
+
+    private void makeDirectoryRecursion(URI uri) throws FileNotFoundException {
+        Tuple2<String,String> path_name = URIUtil.separatePathAndNameFromURI(uri);
+        Tuple2<String,String> path_parentPath = toSmbPathWithParentPath(path_name);
+
+        //check parent path
+        if(!diskShare.folderExists(path_parentPath.v2())){
+            URI pUri = UriComponentsBuilder.fromUriString(path_name.v1()).build().toUri();
+            makeDirectoryRecursion(pUri);
+        }
+
+        //check path
+        if(!diskShare.folderExists(path_parentPath.v1())){
+            diskShare.mkdir(path_parentPath.v1());
+        }
+
+        //other way
+//        StringBuilder sbCurrentDir = new StringBuilder();
+//        Stream.of(path_parentPath.v1().split("\\\\"))
+//                .forEach(dir -> {
+//                    sbCurrentDir.append(dir);
+//                    if(!diskShare.folderExists(sbCurrentDir.toString())){
+//                        diskShare.mkdir(sbCurrentDir.toString());
+//                    }
+//                    sbCurrentDir.append("\\");
+//                });
+    }
+
+    private AbstractFileTable create(InputStream stream, String path, String name, Long size, Date time) throws Exception {
+        Tuple2<String,String> path_name = Tuple.tuple(path,name);
+        Tuple2<String,String> path_parentPath = toSmbPathWithParentPath(path_name);
+
+        if(!diskShare.folderExists(path_parentPath.v2()) &&
+                fileTableProperties.isAutoCreateDirectory()){
+            URI pUri = UriComponentsBuilder.fromUriString(path).build().toUri();
+            makeDirectoryRecursion(pUri);
+        }
 
         com.hierynomus.smbj.share.File f = diskShare.openFile(
-                fileName,
+                path_parentPath.v1(),
                 of(GENERIC_ALL),
                 of(FILE_ATTRIBUTE_NORMAL),
                 SMB2ShareAccess.ALL,
@@ -231,26 +264,16 @@ public class SMBFileTableHandler implements FileTableHandler {
 
     @Override
     public AbstractFileTable create(URI uri) throws Exception {
-        //smb file path is database-directory\FileTable-directory\{file}
-        String filePath = UriComponentsBuilder.newInstance()
-                .path(fileTableProperties.getDatabase())
-                .pathSegment(fileTableNameProvider.provide())
-                .path(uri.getPath())
-                .toUriString();
-        String fileName = filePath.replace("/", "\\");
+        Tuple2<String,String> path_name = URIUtil.separatePathAndNameFromURI(uri);
+        Tuple2<String,String> path_parentPath = toSmbPathWithParentPath(path_name);
 
-        StringBuilder sbCurrentDir = new StringBuilder();
-        Stream.of(fileName.split("\\\\"))
-                .forEach(dir -> {
-                    sbCurrentDir.append(dir);
-                    if(!diskShare.folderExists(sbCurrentDir.toString())){
-                        diskShare.mkdir(sbCurrentDir.toString());
-                    }
-                    sbCurrentDir.append("\\");
-                });
+        if(!diskShare.folderExists(path_parentPath.v2()) &&
+                fileTableProperties.isAutoCreateDirectory()){
+            URI pUri = UriComponentsBuilder.fromUriString(path_name.v1()).build().toUri();
+            makeDirectoryRecursion(pUri);
+        }
 
         Date time = new Date();
-        Tuple2<String,String> pn = separatePathAndNameFromURI(uri);
         String fileNamespacePath = FileTablePathBuilder.newInstance()
                 .uri()
                 .pathSegment(fileTableNameProvider.provide())
@@ -260,7 +283,7 @@ public class SMBFileTableHandler implements FileTableHandler {
                 .toWinString();
 
         AbstractFileTable a = new DefaultFileTable();
-        a.setName(pn.v2());
+        a.setName(path_name.v2());
         a.setFile_namespace_path(fileNamespacePath);
         a.setFile_type(null);
         a.setCached_file_size(null);
@@ -278,16 +301,11 @@ public class SMBFileTableHandler implements FileTableHandler {
 
     @Override
     public File readFile(URI uri) throws Exception {
-        //smb file path is database-directory\FileTable-directory\{file}
-        String filePath = UriComponentsBuilder.newInstance()
-                .path(fileTableProperties.getDatabase())
-                .pathSegment(fileTableNameProvider.provide())
-                .path(uri.getPath())
-                .toUriString();
-        String fileName = filePath.replace("/", "\\");
+        Tuple2<String,String> path_name = URIUtil.separatePathAndNameFromURI(uri);
+        Tuple2<String,String> path_parentPath = toSmbPathWithParentPath(path_name);
 
         com.hierynomus.smbj.share.File f = diskShare.openFile(
-                fileName,
+                path_parentPath.v1(),
                 of(GENERIC_ALL),
                 of(FILE_ATTRIBUTE_NORMAL),
                 SMB2ShareAccess.ALL,
@@ -308,16 +326,11 @@ public class SMBFileTableHandler implements FileTableHandler {
 
     @Override
     public InputStream readStream(URI uri) throws Exception {
-        //smb file path is database-directory\FileTable-directory\{file}
-        String filePath = UriComponentsBuilder.newInstance()
-                .path(fileTableProperties.getDatabase())
-                .pathSegment(fileTableNameProvider.provide())
-                .path(uri.getPath())
-                .toUriString();
-        String fileName = filePath.replace("/", "\\");
+        Tuple2<String,String> path_name = URIUtil.separatePathAndNameFromURI(uri);
+        Tuple2<String,String> path_parentPath = toSmbPathWithParentPath(path_name);
 
         com.hierynomus.smbj.share.File f = diskShare.openFile(
-                fileName,
+                path_parentPath.v1(),
                 of(GENERIC_ALL),
                 of(FILE_ATTRIBUTE_NORMAL),
                 SMB2ShareAccess.ALL,
@@ -339,17 +352,11 @@ public class SMBFileTableHandler implements FileTableHandler {
 
     @Override
     public AbstractFileTable read(URI uri) throws Exception {
-        //smb file path is database-directory\FileTable-directory\{file}
-        String filePath = UriComponentsBuilder.newInstance()
-                .path(fileTableProperties.getDatabase())
-                .pathSegment(fileTableNameProvider.provide())
-                .path(uri.getPath())
-                .toUriString();
-        String fileName = filePath.replace("/", "\\");
+        Tuple2<String,String> path_name = URIUtil.separatePathAndNameFromURI(uri);
+        Tuple2<String,String> path_parentPath = toSmbPathWithParentPath(path_name);
 
-        FileAllInformation file = diskShare.getFileInformation(fileName);
+        FileAllInformation file = diskShare.getFileInformation(path_parentPath.v1());
 
-        Tuple2<String,String> pn = separatePathAndNameFromURI(uri);
         String fileNamespacePath = FileTablePathBuilder.newInstance()
                 .uri()
                 .pathSegment(fileTableNameProvider.provide())
@@ -359,7 +366,7 @@ public class SMBFileTableHandler implements FileTableHandler {
                 .toWinString();
 
         AbstractFileTable a = new DefaultFileTable();
-        a.setName(pn.v2());
+        a.setName(path_name.v2());
         a.setFile_namespace_path(fileNamespacePath);
         a.setFile_type(null);
         a.setCached_file_size(file.getStandardInformation().getEndOfFile());
@@ -377,34 +384,24 @@ public class SMBFileTableHandler implements FileTableHandler {
 
     @Override
     public boolean delete(URI uri) throws Exception {
-        //smb file path is database-directory\FileTable-directory\{file}
-        String filePath = UriComponentsBuilder.newInstance()
-                .path(fileTableProperties.getDatabase())
-                .pathSegment(fileTableNameProvider.provide())
-                .path(uri.getPath())
-                .toUriString();
-        String fileName = filePath.replace("/", "\\");
+        Tuple2<String,String> path_name = URIUtil.separatePathAndNameFromURI(uri);
+        Tuple2<String,String> path_parentPath = toSmbPathWithParentPath(path_name);
 
-        if(diskShare.folderExists(fileName)){
-            diskShare.rmdir(fileName,false);
-        }else if(diskShare.fileExists(fileName)){
+        if(diskShare.folderExists(path_parentPath.v1())){
+            diskShare.rmdir(path_parentPath.v1(),false);
+        }else if(diskShare.fileExists(path_parentPath.v1())){
 //            onceDiskShare(ds -> ds.rm(fileName));
-            diskShare.rm(fileName);
+            diskShare.rm(path_parentPath.v1());
         }
         return true;
     }
 
     @Override
     public List<AbstractFileTable> readChild(URI uri) throws Exception {
-        //smb file path is database-directory\FileTable-directory\{file}
-        String filePath = UriComponentsBuilder.newInstance()
-                .path(fileTableProperties.getDatabase())
-                .pathSegment(fileTableNameProvider.provide())
-                .path(uri.getPath())
-                .toUriString();
-        String fileName = filePath.replace("/", "\\");
+        Tuple2<String,String> path_name = URIUtil.separatePathAndNameFromURI(uri);
+        Tuple2<String,String> path_parentPath = toSmbPathWithParentPath(path_name);
 
-        List<FileIdBothDirectoryInformation> fis = diskShare.list(fileName);
+        List<FileIdBothDirectoryInformation> fis = diskShare.list(path_parentPath.v1());
 
         String fileNamespacePath = FileTablePathBuilder.newInstance()
                 .uri()
@@ -440,13 +437,8 @@ public class SMBFileTableHandler implements FileTableHandler {
 
     @Override
     public boolean rename(URI uri, String name) throws Exception {
-        //smb file path is database-directory\FileTable-directory\{file}
-        String filePath = UriComponentsBuilder.newInstance()
-                .path(fileTableProperties.getDatabase())
-                .pathSegment(fileTableNameProvider.provide())
-                .path(uri.getPath())
-                .toUriString();
-        String fileName = filePath.replace("/", "\\");
+        Tuple2<String,String> path_name = URIUtil.separatePathAndNameFromURI(uri);
+        Tuple2<String,String> path_parentPath = toSmbPathWithParentPath(path_name);
 
         Tuple2<String,String> pathName = URIUtil.separatePathAndNameFromURI(uri);
         URI uriNew = UriComponentsBuilder.fromPath(pathName.v1())
@@ -461,7 +453,7 @@ public class SMBFileTableHandler implements FileTableHandler {
         String fileNameNew = filePathNew.replace("/", "\\");
 
         try(com.hierynomus.smbj.share.File f = diskShare.openFile(
-                fileName,
+                path_parentPath.v1(),
                 of(DELETE,GENERIC_WRITE),
                 of(FILE_ATTRIBUTE_NORMAL),
                 SMB2ShareAccess.ALL,

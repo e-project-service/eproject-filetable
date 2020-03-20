@@ -97,7 +97,6 @@ public abstract class FileTableConvertibleStorage<FILE_INFO>
                         AbstractFileTable aft = fileTableService.create(p.open(),uri);
                         return converter.convert(aft,context);
                     } catch (Exception e) {
-                        logger.error("Cant create filetable file!", e);
                         throw new RuntimeException(e);
                     }
                 })
@@ -106,7 +105,6 @@ public abstract class FileTableConvertibleStorage<FILE_INFO>
                         AbstractFileTable aft = fileTableService.create(uri);
                         return converter.convert(aft,context);
                     } catch (Exception e) {
-                        logger.error("Cant create filetable directory!", e);
                         throw new RuntimeException(e);
                     }
                 });
