@@ -15,7 +15,7 @@ public class BaseFileTableProperties {
      * @see com.github.xiaoyao9184.eproject.filetable.core.FileSystemFileTableHandler
      */
     private String mappingPath;
-    private MappingLocation mappingLocation;
+    private MappingLocation mappingLocation = MappingLocation.DATABASE;
 
     private String rootPath;
     private String servername;
