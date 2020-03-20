@@ -19,11 +19,15 @@ public class FileInfoFileTableConverter implements FileTableConverter<FileInfo> 
     @Override
     public FileInfo convert(AbstractFileTable aft, FileTableContext context) {
         int index = aft.getFile_namespace_path().lastIndexOf("\\");
-        String pp = aft.getFile_namespace_path().substring(0,index);
+        String pp = aft.getFile_namespace_path().substring(0,index)
+                .replace("\\","/");
+
+        String p = aft.getFile_namespace_path()
+                .replace("\\","/");
 
         FileTableInfo info = new FileTableInfo();
         info.setName(aft.getName());
-        info.setPath(aft.getFile_namespace_path());
+        info.setPath(p);
         info.setParentPath(pp);
 
         info.setSize(aft.getCached_file_size());
