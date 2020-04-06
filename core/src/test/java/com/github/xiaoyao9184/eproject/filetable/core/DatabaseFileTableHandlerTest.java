@@ -3,6 +3,8 @@ package com.github.xiaoyao9184.eproject.filetable.core;
 import com.github.xiaoyao9184.eproject.filetable.DataBaseHandlerConfiguration;
 import com.github.xiaoyao9184.eproject.filetable.MssqlConfig;
 import com.github.xiaoyao9184.eproject.filetable.PropertiesConfiguration;
+import com.github.xiaoyao9184.eproject.filetable.core.handle.DatabaseFileTableHandler;
+import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
 import com.github.xiaoyao9184.eproject.filetable.entity.TestFileTable;
 import com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties;
 import com.github.xiaoyao9184.eproject.filetable.model.FileInfo;
@@ -122,17 +124,14 @@ public class DatabaseFileTableHandlerTest {
                 .path("/new_text.txt")
                 .build()
                 .toUri();
-        FileInfo a = databaseFileTableHandler.read(uri);
+        AbstractFileTable a = databaseFileTableHandler.read(uri);
 
         Assert.assertEquals("file size not same",
-                a.getSize().intValue(),
+                a.getCached_file_size().intValue(),
                 3);
         Assert.assertEquals("ID",
-                a.getPath(),
+                a.getFile_namespace_path(),
                 "/new_text.txt");
-
-        Assert.assertTrue("parent path not contains '\\'",
-                a.getParentPath().contains("\\"));
     }
 
     @Test
@@ -141,7 +140,7 @@ public class DatabaseFileTableHandlerTest {
                 .path("/new_dir")
                 .build()
                 .toUri();
-        List<FileInfo> list = databaseFileTableHandler.readChild(uri);
+        List<AbstractFileTable> list = databaseFileTableHandler.readChild(uri);
 
         Assert.assertEquals("file number not same",
                 list.size(),

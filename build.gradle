@@ -29,9 +29,9 @@ allprojects {
         mavenLocal()
         mavenCentral()
         jcenter()
-        maven{
-            url 'http://maven.aliyun.com/mvn/repository/'
-        }
+//        maven{
+//            url 'http://maven.aliyun.com/mvn/repository/'
+//        }
         maven{
             url 'https://jitpack.io'
         }
@@ -79,10 +79,10 @@ project(':eproject-filetable-boot') {
         runtime "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
 
         compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-        compile "org.springframework.boot:spring-boot-starter-webflux:${springBootVersion}"
+//        compile "org.springframework.boot:spring-boot-starter-webflux:${springBootVersion}"
 
 //        compile 'io.r2dbc:r2dbc-mssql:1.0.0.BUILD-SNAPSHOT'
-        compile 'io.r2dbc:r2dbc-mssql:0.8.0.M8'
+//        compile 'io.r2dbc:r2dbc-mssql:0.8.0.M8'
 
         compile(project(':eproject-filetable-core'))
 
