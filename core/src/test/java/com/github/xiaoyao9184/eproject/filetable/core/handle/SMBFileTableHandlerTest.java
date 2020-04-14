@@ -114,6 +114,7 @@ public class SMBFileTableHandlerTest {
 
     @Test
     public void test02CreateByBytes() throws Exception {
+        fileTableProperties.setAutoCreateDirectory(true);
         URI uri = UriComponentsBuilder.newInstance()
                 .path("/test/smb")
                 .path("/byte.txt")
@@ -129,6 +130,7 @@ public class SMBFileTableHandlerTest {
 
     @Test
     public void test03CreateByFileWithNewName() throws Exception {
+        fileTableProperties.setAutoCreateDirectory(true);
         URI uri = UriComponentsBuilder.newInstance()
                 .path("/test/smb")
                 .path("/file.txt")
@@ -149,6 +151,7 @@ public class SMBFileTableHandlerTest {
 
     @Test
     public void test04CreateByMultipartFileWithoutNewName() throws Exception {
+        fileTableProperties.setAutoCreateDirectory(true);
         URI uri = UriComponentsBuilder.newInstance()
                 .path("/test/smb")
                 .path("/")
@@ -166,6 +169,7 @@ public class SMBFileTableHandlerTest {
 
     @Test
     public void test05CreateDir() throws Exception {
+        fileTableProperties.setAutoCreateDirectory(true);
         URI uri = UriComponentsBuilder.newInstance()
                 .path("/test/smb")
                 .path("/test_dir/new_dir")
@@ -238,7 +242,7 @@ public class SMBFileTableHandlerTest {
 
         Assert.assertEquals(
                 list.size(),
-                5);
+                4);
     }
 
     @Test

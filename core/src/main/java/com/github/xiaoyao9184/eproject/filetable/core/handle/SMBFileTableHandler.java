@@ -211,6 +211,8 @@ public class SMBFileTableHandler implements FileTableHandler {
                 path = pn.v1();
                 name = pn.v2();
             }
+        }else{
+            path = path.substring(0, path.length() - 1);
         }
 
         return create(
