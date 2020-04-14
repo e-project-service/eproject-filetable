@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,31 +42,33 @@ import java.util.Set;
         classes = {
         MssqlConfig.class }
 )
+@TestPropertySource(locations = {
+        "classpath:filetable.properties"})
 @ComponentScan("com.github.xiaoyao9184.eproject.filetable")
 public class TestFileTableRepositoryTest {
 
     @Autowired
     private TestFileTableRepository testFileTableRepository;
 
-    @Value("${eproject.filetable.share.rootPath}")
+    @Value("${project.filetable.rootPath}")
     private String fileTableRootPath;
 
-    @Value("${eproject.filetable.share.servername}")
+    @Value("${project.filetable.servername}")
     private String servername;
 
-    @Value("${eproject.filetable.share.username}")
+    @Value("${project.filetable.username}")
     private String username;
 
-    @Value("${eproject.filetable.share.password}")
+    @Value("${project.filetable.password}")
     private String password;
 
-    @Value("${eproject.filetable.share.domain}")
+    @Value("${project.filetable.domain}")
     private String domain;
 
-    @Value("${eproject.filetable.share.instance}")
+    @Value("${project.filetable.instance}")
     private String instance;
 
-    @Value("${eproject.filetable.share.database}")
+    @Value("${project.filetable.database}")
     private String database;
 
     private String tableName;

@@ -1,9 +1,9 @@
 package com.github.xiaoyao9184.eproject.filetable.core.handle;
 
 import com.github.xiaoyao9184.eproject.filetable.FileSystemHandlerConfiguration;
-import com.github.xiaoyao9184.eproject.filetable.MssqlConfig;
 import com.github.xiaoyao9184.eproject.filetable.PropertiesConfiguration;
 import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
+import com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -41,6 +41,9 @@ public class FileSystemFileTableHandlerTest {
     @Autowired
     private FileSystemFileTableHandler fileSystemFileTableHandler;
 
+    @Autowired
+    private BaseFileTableProperties fileTableProperties;
+
     @Test
     public void test01CreateByStream() {
         //no need
@@ -49,6 +52,7 @@ public class FileSystemFileTableHandlerTest {
 
     @Test
     public void test02CreateByBytes() throws Exception {
+        fileTableProperties.setAutoCreateDirectory(true);
         URI uri = UriComponentsBuilder.newInstance()
                 .path("/test/fs")
                 .path("/byte.txt")
@@ -64,6 +68,7 @@ public class FileSystemFileTableHandlerTest {
 
     @Test
     public void test03CreateByFileWithNewName() throws Exception {
+        fileTableProperties.setAutoCreateDirectory(true);
         URI uri = UriComponentsBuilder.newInstance()
                 .path("/test/fs")
                 .path("/file.txt")
@@ -84,6 +89,7 @@ public class FileSystemFileTableHandlerTest {
 
     @Test
     public void test04CreateByMultipartFileWithoutNewName() throws Exception {
+        fileTableProperties.setAutoCreateDirectory(true);
         URI uri = UriComponentsBuilder.newInstance()
                 .path("/test/fs")
                 .path("/")
@@ -101,6 +107,7 @@ public class FileSystemFileTableHandlerTest {
 
     @Test
     public void test05CreateDir() throws Exception {
+        fileTableProperties.setAutoCreateDirectory(true);
         URI uri = UriComponentsBuilder.newInstance()
                 .path("/test/fs")
                 .path("/test_dir/new_dir")
@@ -239,5 +246,11 @@ public class FileSystemFileTableHandlerTest {
                 .build()
                 .toUri();
         fileSystemFileTableHandler.delete(uri6);
+
+        URI uri7 = UriComponentsBuilder.newInstance()
+                .path("/test")
+                .build()
+                .toUri();
+        fileSystemFileTableHandler.delete(uri7);
     }
 }

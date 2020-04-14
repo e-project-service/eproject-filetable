@@ -16,8 +16,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties.MappingLocation.DATABASE;
 import static com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties.Operator.*;
+import static com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties.OperatorMethod.DATABASE;
 import static com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties.OperatorMethod.FILE;
 
 /**
