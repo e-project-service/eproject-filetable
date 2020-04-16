@@ -1,67 +1,46 @@
 package com.github.xiaoyao9184.eproject.filetable.mvc;
 
 import com.github.xiaoyao9184.eproject.filestorage.core.FileInfoStorage;
-import com.github.xiaoyao9184.eproject.filestorage.core.FilePointer;
 import com.github.xiaoyao9184.eproject.filestorage.core.FileStorage;
-import com.github.xiaoyao9184.eproject.filestorage.core.MultipartFilePointer;
-import com.github.xiaoyao9184.eproject.filetable.*;
-import com.github.xiaoyao9184.eproject.filetable.entity.TestFileTable;
 import com.github.xiaoyao9184.eproject.filetable.model.FileInfo;
-import com.github.xiaoyao9184.eproject.filetable.service.FileTableService;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.mockito.ArgumentMatcher;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.*;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.accept.ContentNegotiationManagerFactoryBean;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by xy on 2020/1/15.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(
-        classes = {
-                BootMvcConfiguration.class }
-)
 public class FileInfoControllerTest {
 
-    @LocalServerPort
-    private int port;
-
-    @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
     @MockBean
     private FileStorage<URI> infoFileStorage;
@@ -69,8 +48,38 @@ public class FileInfoControllerTest {
     @MockBean
     private FileInfoStorage<URI,FileInfo> infoFileInfoStorage;
 
+    @InjectMocks
+    private FileInfoController fileInfoController;
+
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+
+//        Cant use configurer because buildContentNegotiationManager is protected
+//        ContentNegotiationConfigurer configurer = new ContentNegotiationConfigurer(null);
+//        configurer.favorPathExtension(false).
+//                favorParameter(false).
+//                ignoreAcceptHeader(false).
+//                useJaf(false).
+//                defaultContentType(MediaType.APPLICATION_JSON);
+//        configurer.buildContentNegotiationManager()
+        ContentNegotiationManagerFactoryBean bean = new ContentNegotiationManagerFactoryBean();
+        bean.setFavorPathExtension(false);
+        bean.setFavorParameter(false);
+        bean.setIgnoreAcceptHeader(false);
+        bean.setUseJaf(false);
+        bean.setDefaultContentType(MediaType.APPLICATION_JSON);
+        bean.afterPropertiesSet();
+
+        //no need @SpringBootTest
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(fileInfoController)
+                .setContentNegotiationManager(bean.getObject())
+                .build();
+    }
+
     @Test
-    public void test_add() throws IOException {
+    public void test_add() throws Exception {
         Path tempFile = Files.createTempFile("upload-test-file", ".txt");
         Files.write(tempFile, "some test content...\nline1\nline2".getBytes());
 
@@ -78,65 +87,47 @@ public class FileInfoControllerTest {
         //to upload in-memory bytes use ByteArrayResource instead
         FileSystemResource fileSystemResource = new FileSystemResource(file);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        MultiValueMap<String, Object> body
-                = new LinkedMultiValueMap<>();
-        body.add("file", fileSystemResource);
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity
-                = new HttpEntity<>(body, headers);
-
         FileInfo fi = new FileInfo();
         fi.setPath("new_dir/new_txt.txt");
-        when(infoFileInfoStorage.storageInfo(any(),any()))
+        when(infoFileInfoStorage.storageInfo(any(),eq(URI.create("/new_dir/new_txt.txt"))))
                 .thenReturn(fi);
 
-        ResponseEntity<FileInfo> res1 = this.restTemplate.postForEntity(
-                "http://localhost:" + port + "/v1/file-infos/new_dir/new_txt.txt",
-                requestEntity,
-                FileInfo.class);
+        MockMultipartFile upload = new MockMultipartFile("file",fileSystemResource.getInputStream());
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.fileUpload("/v1/file-infos/new_dir/new_txt.txt")
+                        .file(upload)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.path",is("new_dir/new_txt.txt")));
 
-        Assert.assertNotNull(res1.getBody());
-        Assert.assertEquals(res1.getStatusCodeValue(), HttpStatus.CREATED.value());
-        Assert.assertEquals(res1.getBody().getPath(), fi.getPath());
     }
 
     @Test
-    public void test_delete() {
-        when(infoFileStorage.delete(URI.create("new_dir/new_txt.txt")))
-                .thenReturn(false);
+    public void test_delete() throws Exception {
+        when(infoFileStorage.delete(eq(URI.create("/new_dir/new_txt.txt"))))
+                .thenReturn(true);
 
-        ResponseEntity<Void> res1 = this.restTemplate.exchange(
-                "http://localhost:" + port + "/v1/file-infos/new_dir/new_txt.txt",
-                HttpMethod.DELETE,
-                null,
-                Void.class);
-
-        Assert.assertNull(res1.getBody());
-        Assert.assertEquals(res1.getStatusCodeValue(), HttpStatus.ACCEPTED.value());
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.delete("/v1/file-infos/new_dir/new_txt.txt")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isAccepted());
     }
 
     @Test
-    public void test_get() {
+    public void test_get() throws Exception {
         FileInfo fi = new FileInfo();
         fi.setPath("new_dir/new_txt.txt");
-        when(infoFileInfoStorage.findInfo(argThat(new ArgumentMatcher<URI>() {
-            @Override
-            public boolean matches(Object o) {
-                return ((URI)o).getPath().equals("/" + fi.getPath());
-            }
-        })))
+        when(infoFileInfoStorage.findInfo(eq(URI.create("/new_dir/new_txt.txt"))))
                 .thenReturn(fi);
 
-        ResponseEntity<FileInfo> res1 = this.restTemplate.getForEntity(
-                "http://localhost:" + port + "/v1/file-infos/new_dir/new_txt.txt",
-                FileInfo.class);
-
-        Assert.assertEquals(res1.getStatusCodeValue(), HttpStatus.OK.value());
-        Assert.assertNotNull(res1.getBody());
-        Assert.assertEquals(res1.getBody().getPath(), fi.getPath());
-
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.get("/v1/file-infos/new_dir/new_txt.txt")
+                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.path",is("new_dir/new_txt.txt")));
 
         List<FileInfo> fis = new ArrayList<>();
         fis.add(fi);
@@ -148,13 +139,13 @@ public class FileInfoControllerTest {
         })))
                 .thenReturn(fis);
 
-        ResponseEntity<List> res2 = this.restTemplate.getForEntity(
-                "http://localhost:" + port + "/v1/file-infos/",
-                List.class);
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.get("/v1/file-infos/")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(1)));
 
-        Assert.assertEquals(res2.getStatusCodeValue(), HttpStatus.OK.value());
-        Assert.assertNotNull(res2.getBody());
-        Assert.assertEquals(res2.getBody().size(), 1);
     }
 
 }

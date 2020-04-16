@@ -32,7 +32,7 @@ import java.util.Optional;
  */
 @Controller
 @Scope(value = BeanDefinition.SCOPE_SINGLETON)
-@RequestMapping(value = "/v1/files")
+@RequestMapping(value = "/v1/file-infos")
 @Api(value = "/v1/files")
 public class FileInfoController {
 
@@ -108,11 +108,11 @@ public class FileInfoController {
                 .pathSegment(path)
                 .build()
                 .toUri();
-        storage.delete(uri);
+        boolean result = storage.delete(uri);
 
         logger.debug("File path:{}", path);
 
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(result ? HttpStatus.ACCEPTED : HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ApiOperation(
