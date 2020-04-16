@@ -55,6 +55,7 @@ public class MssqlConfig {
             DataSource dataSource
     ) {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        vendorAdapter.setDatabasePlatform("org.hibernate.dialect.SQLServerDialect");
         vendorAdapter.setGenerateDdl(false);
         vendorAdapter.setShowSql(true);
 

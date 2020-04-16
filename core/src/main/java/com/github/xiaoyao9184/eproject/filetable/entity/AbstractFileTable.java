@@ -14,9 +14,6 @@ public abstract class AbstractFileTable {
     @Column(name="stream_id")
     private String stream_id;
 
-    /**
-     * 名称
-     */
     @Column(name="name")
     private String name;
 
