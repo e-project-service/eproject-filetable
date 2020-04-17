@@ -198,6 +198,16 @@ public class FileInfoControllerIntegratedTest {
         Assert.assertNull(res_test_dir_1.getBody());
         Assert.assertEquals(res_test_dir_1.getStatusCodeValue(), HttpStatus.ACCEPTED.value());
 
+
+        ResponseEntity<Void> res_test_dir_3_new_txt = this.restTemplate.exchange(
+                "http://localhost:" + port + "/v1/file-infos/test_dir/3/new_txt.txt",
+                HttpMethod.DELETE,
+                null,
+                Void.class);
+
+        Assert.assertNull(res_test_dir_3_new_txt.getBody());
+        Assert.assertEquals(res_test_dir_3_new_txt.getStatusCodeValue(), HttpStatus.ACCEPTED.value());
+
         //delete dir
         ResponseEntity<Void> res_test_dir_3 = this.restTemplate.exchange(
                 "http://localhost:" + port + "/v1/file-infos/test_dir/3",

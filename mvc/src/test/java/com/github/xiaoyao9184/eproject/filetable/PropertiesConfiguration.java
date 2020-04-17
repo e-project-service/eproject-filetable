@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 public class PropertiesConfiguration {
 
     @ConfigurationProperties(
-            prefix = "eproject.filetable"
+            prefix = "project.filetable"
     )
     public static class TestFileTableProperties extends BaseFileTableProperties {
 
