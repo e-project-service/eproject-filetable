@@ -1,12 +1,10 @@
 package com.github.xiaoyao9184.eproject.filetable.repository;
 
 import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.io.Serializable;
 import java.sql.Blob;
 import java.util.List;
 

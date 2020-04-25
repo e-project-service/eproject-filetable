@@ -28,6 +28,7 @@ public class EntityTableNameSwitchTableRepository implements FileTableRepository
         //noinspection unchecked
         this.fileTableRepository = fileTableRepository
                 .stream()
+                .distinct()
                 .filter(r -> SimpleJpaRepository.class.equals(AopUtils.getTargetClass(r)))
                 .collect(Collectors.toMap(
                         SimpleJpaRepositoryBeanFileTableNameProvider::getSimpleJpaRepositoryTableName,
