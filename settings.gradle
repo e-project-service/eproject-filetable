@@ -4,6 +4,7 @@ include 'eproject-filetable-model'
 include 'eproject-filetable-core'
 include 'eproject-filetable-mvc'
 include 'eproject-filetable-autoconfigure'
+include 'eproject-filetable-dynamic-repository'
 include 'eproject-filetable-boot'
 
 include 'eproject-filestorage-api'
@@ -15,6 +16,7 @@ project(':eproject-filetable-jdbc-sample').projectDir = new File('jdbc-sample')
 project(':eproject-filetable-model').projectDir = new File('model')
 project(':eproject-filetable-core').projectDir = new File('core')
 project(':eproject-filetable-mvc').projectDir = new File('mvc')
+project(':eproject-filetable-dynamic-repository').projectDir = new File('dynamic-repository')
 project(':eproject-filetable-autoconfigure').projectDir = new File('autoconfigure')
 project(':eproject-filetable-boot').projectDir = new File('boot')
 

@@ -302,6 +302,50 @@ project(':eproject-filetable-mvc') {
 
 }
 
+project(':eproject-filetable-dynamic-repository') {
+
+    apply plugin: 'com.github.ksoichiro.build.info'
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-eclipse'
+
+    group 'com.github.xiaoyao9184.eproject.filetable'
+    version "${version}"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+
+        compile(project(':eproject-filetable-core'))
+        //hibernate
+        compile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.12.Final'
+        compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.0.12.Final'
+        //byte-buddy
+        compile 'net.bytebuddy:byte-buddy:1.10.9'
+        //cloning
+        compile group: 'io.github.kostaskougios', name: 'cloning', version: '1.10.3'
+
+
+
+        //Test
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        //Spring
+        testCompile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
+        testCompile group: 'org.springframework', name: 'spring-webmvc', version: "${springVersion}"
+        //Boot
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "${springBootVersion}"
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"
+        //DB
+        testCompile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.4.1.jre8'
+        testCompile group: 'c3p0', name: 'c3p0', version:'0.9.1.2'
+        //MVC
+        testCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+    }
+
+}
+
 
 project(':eproject-filestorage-api') {
 
