@@ -141,11 +141,28 @@ public class BaseFileTableProperties {
     }
 
     public enum MappingLocation {
-        //TODO make sure
-        //Windows cant mapping server
+
+        /**
+         * Windows cant mapping server only use ComputerName
+         * See <a href="https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/gg651155(v=ws.11)">Net Use</a>
+         */
         @Deprecated
         SERVER,
+
+        /**
+         * Currently this project does not support managing multiple instances, multiple databases,
+         * This project can still run with mapping instance level directory to the local.
+         */
         INSTANCE,
-        DATABASE
+
+        /**
+         * Recommend
+         */
+        DATABASE,
+
+        /**
+         * NOT Recommend
+         */
+        TABLE
     }
 }

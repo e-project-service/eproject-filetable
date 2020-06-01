@@ -1,5 +1,6 @@
 package com.github.xiaoyao9184.eproject.filetable.core.mapping;
 
+import com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProvider;
 import com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -7,6 +8,8 @@ import org.springframework.web.util.UriComponentsBuilder;
  * Created by xy on 2020/3/13.
  */
 public class FileTableLocalhostMappingBuilder {
+
+    private FileTableNameProvider fileTableNameProvider;
 
     public static FileTableLocalhostMappingBuilder newInstance(){
         return new FileTableLocalhostMappingBuilder();
@@ -45,6 +48,10 @@ public class FileTableLocalhostMappingBuilder {
         return this;
     }
 
+    public FileTableLocalhostMappingBuilder table(FileTableNameProvider fileTableNameProvider) {
+        this.fileTableNameProvider = fileTableNameProvider;
+        return this;
+    }
 
     public UriComponentsBuilder build(){
         return UriComponentsBuilder.newInstance()
@@ -52,7 +59,8 @@ public class FileTableLocalhostMappingBuilder {
                 .host("")
                 .path(root)
                 .pathSegment(this.location.ordinal() >= 1 ? "" : instance)
-                .pathSegment(this.location.ordinal() >= 2 ? "" : database);
+                .pathSegment(this.location.ordinal() >= 2 ? "" : database)
+                .pathSegment(this.location.ordinal() >= 3 ? "" : fileTableNameProvider.provide());
     }
 
 }

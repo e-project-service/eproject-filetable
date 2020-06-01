@@ -52,6 +52,7 @@ public class FileSystemFileTableHandler implements FileTableHandler {
     public void init(){
         fileTableLocalhostMappingBuilder = FileTableLocalhostMappingBuilder.newInstance()
                 .root(fileTableProperties.getMappingPath())
+                .table(fileTableNameProvider)
                 .database(fileTableProperties.getDatabase())
                 .instance(fileTableProperties.getInstance())
                 .server(fileTableProperties.getServername())
@@ -72,7 +73,6 @@ public class FileSystemFileTableHandler implements FileTableHandler {
     private AbstractFileTable create(InputStream stream, String path, String name, Long size, Date time) throws Exception {
         //filesystem file path is mapping\database-directory\FileTable-directory\{file}
         URI uri = fileTableLocalhostMappingBuilder.build()
-                .pathSegment(fileTableNameProvider.provide())
                 .path(path)
                 .pathSegment(name)
                 .build()
@@ -97,7 +97,6 @@ public class FileSystemFileTableHandler implements FileTableHandler {
 
         String fileNamespacePath = FileTablePathBuilder.newInstance()
                 .uri()
-                .pathSegment(fileTableNameProvider.provide())
                 .path(path)
                 .pathSegment(name)
                 .and()
@@ -189,7 +188,6 @@ public class FileSystemFileTableHandler implements FileTableHandler {
     public AbstractFileTable create(URI uri) throws Exception {
         //filesystem file path is mapping\database-directory\FileTable-directory\{file}
         URI uriDir = fileTableLocalhostMappingBuilder.build()
-                .pathSegment(fileTableNameProvider.provide())
                 .path(uri.getPath())
                 .build()
                 .toUri();
@@ -203,7 +201,6 @@ public class FileSystemFileTableHandler implements FileTableHandler {
         Tuple2<String,String> path_name = separatePathAndNameFromURI(uri);
         String fileNamespacePath = FileTablePathBuilder.newInstance()
                 .uri()
-                .pathSegment(fileTableNameProvider.provide())
                 .path(uri.getPath())
                 .and()
                 .build()
@@ -229,7 +226,6 @@ public class FileSystemFileTableHandler implements FileTableHandler {
     @Override
     public File readFile(URI uri) throws Exception {
         URI fileUri = fileTableLocalhostMappingBuilder.build()
-                .pathSegment(fileTableNameProvider.provide())
                 .path(uri.getPath())
                 .build()
                 .toUri();
@@ -259,7 +255,6 @@ public class FileSystemFileTableHandler implements FileTableHandler {
     @Override
     public AbstractFileTable read(URI uri) throws Exception {
         URI fileUri = fileTableLocalhostMappingBuilder.build()
-                .pathSegment(fileTableNameProvider.provide())
                 .path(uri.getPath())
                 .build()
                 .toUri();
@@ -271,7 +266,6 @@ public class FileSystemFileTableHandler implements FileTableHandler {
         Tuple2<String,String> path_name = separatePathAndNameFromURI(uri);
         String fileNamespacePath = FileTablePathBuilder.newInstance()
                 .uri()
-                .pathSegment(fileTableNameProvider.provide())
                 .path(uri.getPath())
                 .and()
                 .build()
@@ -297,7 +291,6 @@ public class FileSystemFileTableHandler implements FileTableHandler {
     @Override
     public boolean delete(URI uri) throws Exception {
         URI fileUri = fileTableLocalhostMappingBuilder.build()
-                .pathSegment(fileTableNameProvider.provide())
                 .path(uri.getPath())
                 .build()
                 .toUri();
@@ -309,7 +302,6 @@ public class FileSystemFileTableHandler implements FileTableHandler {
     @Override
     public List<AbstractFileTable> readChild(URI uri) throws Exception {
         URI fileUri = fileTableLocalhostMappingBuilder.build()
-                .pathSegment(fileTableNameProvider.provide())
                 .path(uri.getPath())
                 .build()
                 .toUri();
@@ -318,7 +310,6 @@ public class FileSystemFileTableHandler implements FileTableHandler {
 
         String fileNamespacePath = FileTablePathBuilder.newInstance()
                 .uri()
-                .pathSegment(fileTableNameProvider.provide())
                 .path(uri.getPath())
                 .and()
                 .build()
@@ -357,7 +348,6 @@ public class FileSystemFileTableHandler implements FileTableHandler {
     @Override
     public boolean rename(URI uri, String name) throws Exception {
         URI fileUri = fileTableLocalhostMappingBuilder.build()
-                .pathSegment(fileTableNameProvider.provide())
                 .path(uri.getPath())
                 .build()
                 .toUri();
@@ -366,7 +356,6 @@ public class FileSystemFileTableHandler implements FileTableHandler {
 
         Tuple2<String,String> pathName = URIUtil.separatePathAndNameFromURI(uri);
         URI fileUriNew = fileTableLocalhostMappingBuilder.build()
-                .pathSegment(fileTableNameProvider.provide())
                 .path(pathName.v1())
                 .pathSegment(name)
                 .build()
