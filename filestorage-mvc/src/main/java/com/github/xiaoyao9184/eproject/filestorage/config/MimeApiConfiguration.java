@@ -1,11 +1,13 @@
 package com.github.xiaoyao9184.eproject.filestorage.config;
 
 import com.github.xiaoyao9184.eproject.filestorage.accept.MimeApiPathExtensionAdapterContentNegotiationStrategy;
+import com.github.xiaoyao9184.eproject.filestorage.mvc.MimeStreamController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.accept.ContentNegotiationManager;
@@ -18,6 +20,7 @@ import java.util.List;
  * Created by xy on 2020/3/13.
  */
 @Configuration
+@ComponentScan(basePackageClasses = MimeStreamController.class)
 public class MimeApiConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(MimeApiConfiguration.class);
 
