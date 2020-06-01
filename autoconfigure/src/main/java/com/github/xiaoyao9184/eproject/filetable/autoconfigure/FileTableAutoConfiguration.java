@@ -67,7 +67,7 @@ public class FileTableAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "fileTableHandler")
     public FileTableHandler fileTableHandler(){
         return new ConfigurationFileTableHandler();
     }

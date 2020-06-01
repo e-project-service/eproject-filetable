@@ -3,6 +3,7 @@ package com.github.xiaoyao9184.eproject.filetable.service;
 import com.github.xiaoyao9184.eproject.filetable.core.handle.FileTableHandler;
 import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,7 @@ public class FileTableService implements FileTableHandler {
 
 
     @Autowired
+    @Qualifier("fileTableHandler")
     private FileTableHandler fileTableHandler;
 
 

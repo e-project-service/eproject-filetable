@@ -1,0 +1,145 @@
+
+---
+
+spring:
+  profiles: dev
+
+eproject:
+  auth:
+    domain: auth.xy.com:16666
+    context-path:
+
+debug: true
+
+logging:
+  level:
+    ROOT: ERROR
+    org:springframework: ERROR
+    org.springframework.security: DEBUG
+
+
+---
+
+spring:
+  profiles: test
+
+eproject:
+  auth:
+    domain: ds1019plus:16666
+    context-path:
+
+
+---
+
+spring:
+  profiles: prod
+
+eproject:
+  auth:
+    domain: auth.eproject.com:16666
+    context-path:
+
+
+---
+
+spring:
+  datasource:
+    username: sa
+    password: XY@dev1024
+    url: jdbc:sqlserver://db.xy.com:1433;databaseName=eProjectFileTable
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      minimum-idle: 5
+      maximum-pool-size: 10
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-timeout: 60000
+      connection-test-query: select 1
+#  jpa:
+#    hibernate:
+#      naming:
+#        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+
+security:
+  ignored: #4client
+    - /api/applications
+    - /mgmt/health
+    - /webjars/**
+    - /**/**.html
+    - /**/**.js
+    - /**/**.css
+  user:
+    name: dev
+    password: XY@dev1024
+    # will auto add management role
+    role:
+      - USER
+      - DEV
+  oauth2:
+    client:
+      accessTokenUri: http://${eproject.auth.domain}${eproject.auth.context-path}/oauth/token
+      userAuthorizationUri: http://${eproject.auth.domain}${eproject.auth.context-path}/oauth/authorize
+      clientId: file_table
+      clientSecret: file_table
+    resource:
+      filter-order: 3
+      id: file_table
+#      userInfoUri: http://${eproject.auth.domain}/${eproject.auth.context-path}/userinfo
+#      token-info-uri: http://${eproject.auth.domain}/${eproject.auth.context-path}/check_token
+      jwk:
+        key-set-uri: http://${eproject.auth.domain}${eproject.auth.context-path}/token_keys
+    sso:
+      # default sso is ACCESS_OVERRIDE_ORDER(BASIC_AUTH_ORDER - 2) - 5 when use ManagementServerProperties
+      # default sso is ACCESS_OVERRIDE_ORDER(BASIC_AUTH_ORDER - 2) when not use ManagementServerProperties
+      # but why?
+      # before management BASIC_AUTH_ORDER(0x7fffffff - 5) - 5
+      # https://github.com/spring-projects/spring-boot/blob/10a5cef4ef33e7c86d18e1f92793c2aaa57d5a82/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/autoconfigure/ManagementServerProperties.java#L54
+      # set it to after management ACCESS_OVERRIDE_ORDER (BASIC_AUTH_ORDER - 2)
+      filter-order: 2147483640
+      login-path: /login
+  sessions: if_required
+
+management:
+  security:
+    roles: ACTUATOR
+  context-path: /mgmt
+
+endpoints:
+  sensitive: true
+  routes:
+    enabled: true
+
+eproject:
+  filetable:
+    servername: db.xy.com
+    instance: MSSQLSERVER2012FS
+    database: eProjectFileTable_fs_dir
+    username: administrator
+    password: XY@dev1024
+    domain: WORKGROUP
+
+    rootPath: \\\\WIN-P7IGB7G8JV6\\MSSQLSERVER2012FS\\eProjectFileTable_fs_dir
+    
+    autoCreateDirectory: true
+
+    #
+    # But
+    mappingPath: N:/
+    mappingLocation: DATABASE
+
+    operatorMethods:
+      CREATE: FILE
+      READ_STREAM: FILE
+      READ: DATABASE
+      DELETE: DATABASE
+
+# this project
+project:
+  oai-ui:
+    client:
+      authorizeUrl: http://${eproject.auth.domain}${eproject.auth.context-path}/oauth/authorize
+      clientId: file_table
+      clientSecret: 'file_table'
+      realm: eProject-FileTable-SwaggerUI
+      scopeSeparator: ' '
