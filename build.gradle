@@ -49,144 +49,6 @@ allprojects {
     }
 }
 
-project(':eproject-filetable-boot') {
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'org.springframework.boot'
-    apply plugin: "io.spring.dependency-management"
-    apply plugin: 'propdeps'
-    apply plugin: 'net.researchgate.release'
-
-    group = 'com.github.xiaoyao9184.eproject.filetable'
-    version = "${version}"
-
-    description = "Boot"
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
-    repositories {
-        maven { url "https://repo.spring.io/snapshot" }
-        maven { url "https://repo.spring.io/milestone" }
-//        maven { url "https://repo.spring.io/libs-snapshot-local" }
-//        maven { url "https://repo.spring.io/libs-milestone-local" }
-//        maven { url "https://repo.spring.io/libs-release-local" }
-        maven { url "http://repo.maven.apache.org/maven2" }
-    }
-
-    dependencies {
-
-        runtime "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
-
-        //Boot
-        compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-        compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-        compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
-        compile "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
-        compile "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
-
-        //SecurityOAuth
-        compile "org.springframework.security.oauth:spring-security-oauth2:${springSecurityOauth2Version}"
-        compile group: 'org.springframework.security', name: 'spring-security-jwt', version: '1.1.0.RELEASE'
-
-        //SpringFox
-        compile group: 'io.springfox', name: 'springfox-swagger2', version: "${springFoxVersion}"
-        compile group: 'io.springfox', name: 'springfox-swagger-ui', version: "${springFoxVersion}"
-
-        //DB
-        compile group: 'com.zaxxer', name: 'HikariCP', version: '3.1.0'
-        compile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.4.1.jre8'
-//        compile 'io.r2dbc:r2dbc-mssql:1.0.0.BUILD-SNAPSHOT'
-//        compile 'io.r2dbc:r2dbc-mssql:0.8.0.M8'
-
-        //This
-        compile(project(':eproject-filetable-autoconfigure'))
-        compile(project(':eproject-filetable-mvc'))
-        compile(project(':eproject-filestorage-mvc'))
-
-        testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}") {
-            exclude(module: 'commons-logging')
-        }
-    }
-
-    dependencyManagement {
-        imports {
-//            mavenBom 'org.springframework.security:spring-security-bom:4.2.1.RELEASE'
-//            mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR5'
-//            mavenBom 'org.springframework.cloud:spring-cloud-netflix-dependencies:1.2.7.RELEASE'
-        }
-    }
-
-    release {
-        failOnCommitNeeded = true
-        failOnPublishNeeded = true
-        failOnSnapshotDependencies = false
-        failOnUnversionedFiles = false
-        failOnUpdateNeeded = true
-        revertOnFail = true
-        preCommitText = ''
-        preTagCommitMessage = '[Gradle Release Plugin] - pre tag 提交: '
-        tagCommitMessage = '[Gradle Release Plugin] - 创建tag: '
-        newVersionCommitMessage = '[Gradle Release Plugin] - 新版本： '
-        tagTemplate = '${version}'
-        versionPropertyFile = "${rootProject.projectDir}/gradle.properties"
-        versionProperties = []
-        buildTasks = ['build']
-        scmAdapters = [
-                net.researchgate.release.GitAdapter
-        ]
-
-        git {
-            requireBranch = 'master'
-            pushToRemote = 'origin'
-            pushToBranchPrefix = ''
-            commitVersionFileOnly = false
-        }
-    }
-}
-
-project(':eproject-filetable-autoconfigure') {
-
-    apply plugin: 'com.github.ksoichiro.build.info'
-    apply plugin: 'propdeps'
-    apply plugin: 'propdeps-maven'
-    apply plugin: 'propdeps-idea'
-    apply plugin: 'propdeps-eclipse'
-
-    group 'com.github.xiaoyao9184.eproject.filetable'
-    version "${version}"
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
-    dependencies {
-
-        //boot
-        compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: "${springBootVersion}"
-        optional group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: "${springBootVersion}"
-
-        compile(project(':eproject-filetable-core'))
-        optional(project(':eproject-filetable-mvc'))
-
-        //Test
-        testCompile group: 'junit', name: 'junit', version: '4.12'
-        //Spring
-        testCompile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
-        testCompile group: 'org.springframework', name: 'spring-webmvc', version: "${springVersion}"
-        //Boot
-        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "${springBootVersion}"
-        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"
-        //DB
-        testCompile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.4.1.jre8'
-        testCompile group: 'c3p0', name: 'c3p0', version:'0.9.1.2'
-        testCompile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.12.Final'
-        testCompile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.0.12.Final'
-        //MVC
-        testCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
-    }
-
-}
-
 project(':eproject-filetable-core') {
 
     apply plugin: 'com.github.ksoichiro.build.info'
@@ -257,8 +119,8 @@ project(':eproject-filetable-model') {
     group 'com.github.xiaoyao9184.eproject.filetable'
     version "${version}"
 
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     dependencies {
         //swagger
@@ -321,6 +183,77 @@ project(':eproject-filetable-mvc') {
 
 }
 
+project(':eproject-filetable-security') {
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-eclipse'
+
+    group 'com.github.xiaoyao9184.eproject.filetable'
+    version "${version}"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+        //SecurityOAuth
+        compile "org.springframework.security.oauth:spring-security-oauth2:${springSecurityOauth2Version}"
+
+        ///slf4j-api
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+        //servlet
+        compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+
+        compile(project(":eproject-filetable-core"))
+        compile(project(':eproject-filetable-dynamic-table'))
+
+        //junit
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        //spring
+        testCompile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
+
+    }
+
+}
+
+project(':eproject-filetable-zone') {
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-eclipse'
+
+    group 'com.github.xiaoyao9184.eproject.filetable'
+    version "${version}"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+        //slf4j-api
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+        //servlet
+        compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+        //spring
+        compile group: 'org.springframework', name: 'spring-beans', version: "${springVersion}"
+        compile group: 'org.springframework', name: 'spring-web', version: "${springVersion}"
+
+        compile(project(":eproject-filetable-core"))
+
+        //junit
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        //spring
+        testCompile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
+
+    }
+
+}
+
 project(':eproject-filetable-dynamic-repository') {
 
     apply plugin: 'com.github.ksoichiro.build.info'
@@ -365,6 +298,183 @@ project(':eproject-filetable-dynamic-repository') {
 
 }
 
+project(':eproject-filetable-dynamic-table') {
+
+    apply plugin: 'com.github.ksoichiro.build.info'
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-eclipse'
+
+    group 'com.github.xiaoyao9184.eproject.filetable'
+    version "${version}"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+
+        compile(project(':eproject-filetable-core'))
+        optional(project(':eproject-filetable-dynamic-repository'))
+
+        //Test
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        //Spring
+        testCompile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
+        testCompile group: 'org.springframework', name: 'spring-webmvc', version: "${springVersion}"
+        //DB
+        testCompile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.4.1.jre8'
+        testCompile group: 'c3p0', name: 'c3p0', version:'0.9.1.2'
+        //MVC
+        testCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+    }
+
+}
+
+project(':eproject-filetable-autoconfigure') {
+
+    apply plugin: 'com.github.ksoichiro.build.info'
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-eclipse'
+
+    group 'com.github.xiaoyao9184.eproject.filetable'
+    version "${version}"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+
+        //boot
+        compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: "${springBootVersion}"
+        optional group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: "${springBootVersion}"
+
+        compile(project(':eproject-filetable-core'))
+        optional(project(':eproject-filetable-mvc'))
+        optional(project(':eproject-filetable-dynamic-table'))
+        optional(project(':eproject-filetable-dynamic-repository'))
+        optional(project(':eproject-filetable-security'))
+        optional(project(':eproject-filetable-zone'))
+
+        //Test
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        //Spring
+        testCompile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
+        testCompile group: 'org.springframework', name: 'spring-webmvc', version: "${springVersion}"
+        //Boot
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "${springBootVersion}"
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"
+        //DB
+        testCompile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.4.1.jre8'
+        testCompile group: 'c3p0', name: 'c3p0', version:'0.9.1.2'
+        testCompile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.12.Final'
+        testCompile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.0.12.Final'
+        //MVC
+        testCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+    }
+
+}
+
+project(':eproject-filetable-boot') {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: 'propdeps'
+    apply plugin: 'net.researchgate.release'
+
+    group = 'com.github.xiaoyao9184.eproject.filetable'
+    version = "${version}"
+
+    description = "Boot"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+//        maven { url "https://repo.spring.io/libs-snapshot-local" }
+//        maven { url "https://repo.spring.io/libs-milestone-local" }
+//        maven { url "https://repo.spring.io/libs-release-local" }
+        maven { url "http://repo.maven.apache.org/maven2" }
+    }
+
+    dependencies {
+
+        runtime "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
+
+        //Boot
+        compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+        compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+        compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
+        compile "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
+        compile "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
+
+        //SecurityOAuth
+        compile "org.springframework.security.oauth:spring-security-oauth2:${springSecurityOauth2Version}"
+        compile "org.springframework.security:spring-security-jwt:1.1.0.RELEASE"
+
+        //SpringFox
+        compile group: 'io.springfox', name: 'springfox-swagger2', version: "${springFoxVersion}"
+        compile group: 'io.springfox', name: 'springfox-swagger-ui', version: "${springFoxVersion}"
+
+        //DB
+        compile group: 'com.zaxxer', name: 'HikariCP', version: '3.1.0'
+        compile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.4.1.jre8'
+//        compile 'io.r2dbc:r2dbc-mssql:1.0.0.BUILD-SNAPSHOT'
+//        compile 'io.r2dbc:r2dbc-mssql:0.8.0.M8'
+
+        //This
+        compile(project(':eproject-filestorage-mvc'))
+        compile(project(':eproject-filetable-autoconfigure'))
+        compile(project(':eproject-filetable-mvc'))
+        compile(project(':eproject-filetable-dynamic-repository'))
+        compile(project(':eproject-filetable-security'))
+        compile(project(':eproject-filetable-zone'))
+
+        testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}") {
+            exclude(module: 'commons-logging')
+        }
+    }
+
+    dependencyManagement {
+        imports {
+//            mavenBom 'org.springframework.security:spring-security-bom:4.2.1.RELEASE'
+//            mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR5'
+//            mavenBom 'org.springframework.cloud:spring-cloud-netflix-dependencies:1.2.7.RELEASE'
+        }
+    }
+
+    release {
+        failOnCommitNeeded = true
+        failOnPublishNeeded = true
+        failOnSnapshotDependencies = false
+        failOnUnversionedFiles = false
+        failOnUpdateNeeded = true
+        revertOnFail = true
+        preCommitText = ''
+        preTagCommitMessage = '[Gradle Release Plugin] - pre tag 提交: '
+        tagCommitMessage = '[Gradle Release Plugin] - 创建tag: '
+        newVersionCommitMessage = '[Gradle Release Plugin] - 新版本： '
+        tagTemplate = '${version}'
+        versionPropertyFile = "${rootProject.projectDir}/gradle.properties"
+        versionProperties = []
+        buildTasks = ['build']
+        scmAdapters = [
+                net.researchgate.release.GitAdapter
+        ]
+
+        git {
+            requireBranch = 'master'
+            pushToRemote = 'origin'
+            pushToBranchPrefix = ''
+            commitVersionFileOnly = false
+        }
+    }
+}
 
 project(':eproject-filestorage-api') {
 

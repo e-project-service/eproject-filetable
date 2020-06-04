@@ -1,8 +1,11 @@
-package com.github.xiaoyao9184.eproject.filetable.core;
+package com.github.xiaoyao9184.eproject.filetable.table;
 
+import com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProvider;
+import com.github.xiaoyao9184.eproject.filetable.core.FileTableRepositoryProvider;
+import com.github.xiaoyao9184.eproject.filetable.model.Named;
+import com.github.xiaoyao9184.eproject.filetable.model.TableNameProviders;
 import com.github.xiaoyao9184.eproject.filetable.repository.AbstractFileTableRepository;
 import org.springframework.aop.framework.Advised;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.support.JpaMetamodelEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.util.ReflectionUtils;
@@ -10,23 +13,26 @@ import org.springframework.util.ReflectionUtils;
 import javax.persistence.Table;
 import java.lang.reflect.Field;
 
-import static com.github.xiaoyao9184.eproject.filetable.autoconfigure.FileTableAutoConfiguration.DEFAULT_FILE_TABLE_REPOSITORY;
-
 /**
  * Created by xy on 2020/1/15.
  */
-public class SimpleJpaRepositoryBeanFileTableNameProvider implements FileTableNameProvider {
+public class SimpleJpaRepositoryBeanFileTableNameProvider implements FileTableNameProvider, Named {
 
-    private ApplicationContext applicationContext;
+    private FileTableRepositoryProvider repositoryProvider;
 
-    public SimpleJpaRepositoryBeanFileTableNameProvider(ApplicationContext applicationContext){
-        this.applicationContext = applicationContext;
+    public SimpleJpaRepositoryBeanFileTableNameProvider(FileTableRepositoryProvider repositoryProvider){
+        this.repositoryProvider = repositoryProvider;
     }
 
     @Override
     public String provide() {
-        Object databaseFileTableHandlerRepository = applicationContext.getBean(DEFAULT_FILE_TABLE_REPOSITORY);
+        Object databaseFileTableHandlerRepository = repositoryProvider.provide();
         return getSimpleJpaRepositoryTableName((AbstractFileTableRepository) databaseFileTableHandlerRepository);
+    }
+
+    @Override
+    public String name() {
+        return TableNameProviders.jpa_repository.name();
     }
 
 

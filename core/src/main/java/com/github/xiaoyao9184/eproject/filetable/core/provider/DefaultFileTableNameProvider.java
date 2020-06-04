@@ -1,5 +1,6 @@
-package com.github.xiaoyao9184.eproject.filetable.core;
+package com.github.xiaoyao9184.eproject.filetable.core.provider;
 
+import com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProvider;
 import com.github.xiaoyao9184.eproject.filetable.entity.DefaultFileTable;
 
 import javax.persistence.Table;

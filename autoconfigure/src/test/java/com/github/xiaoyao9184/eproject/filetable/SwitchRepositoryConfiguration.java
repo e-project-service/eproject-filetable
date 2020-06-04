@@ -4,9 +4,9 @@ import com.github.xiaoyao9184.eproject.filetable.autoconfigure.FileTableAutoConf
 import com.github.xiaoyao9184.eproject.filetable.core.*;
 import com.github.xiaoyao9184.eproject.filetable.repository.AbstractFileTableRepository;
 import com.github.xiaoyao9184.eproject.filetable.repository.DefaultFileTableRepository;
-import com.github.xiaoyao9184.eproject.filetable.repository.EntityTableNameSwitchTableRepository;
+import com.github.xiaoyao9184.eproject.filetable.repository.EntityClassRoutingRepository;
+import com.github.xiaoyao9184.eproject.filetable.table.ThreadLocalEntitySwitchFileTableNameProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
 import java.util.List;
@@ -23,23 +23,23 @@ public class SwitchRepositoryConfiguration {
      * @return
      */
     @Bean
-    public EntityTableNameSwitchTableRepository entityTableNameSwitchTableRepository(
+    public EntityClassRoutingRepository entityTableNameSwitchTableRepository(
             @Autowired FileTableNameProvider fileTableNameProvider,
             @Autowired List<AbstractFileTableRepository> fileTableRepository
     ){
-        return new EntityTableNameSwitchTableRepository(fileTableNameProvider,fileTableRepository);
+        return new EntityClassRoutingRepository(fileTableNameProvider,fileTableRepository);
     }
 
     /**
      * Replace {@link FileTableAutoConfiguration#fileTableRepositoryProvider(DefaultFileTableRepository)}
-     * @param entityTableNameSwitchTableRepository
+     * @param entityClassRoutingRepository
      * @return
      */
     @Bean
     public FileTableRepositoryProvider fileTableRepositoryProvider(
-            @Autowired EntityTableNameSwitchTableRepository entityTableNameSwitchTableRepository
+            @Autowired EntityClassRoutingRepository entityClassRoutingRepository
     ){
-        return () -> entityTableNameSwitchTableRepository;
+        return () -> entityClassRoutingRepository;
     }
 
     /**

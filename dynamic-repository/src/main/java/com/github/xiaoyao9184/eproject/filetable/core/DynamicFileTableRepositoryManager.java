@@ -320,6 +320,10 @@ public abstract class DynamicFileTableRepositoryManager {
         }
     }
 
+    public boolean isInitialized(String entityName){
+        return fileTableRepositoryMap.containsKey(entityName);
+    }
+
     public void addDefault(Map<String, AbstractFileTableRepository<AbstractFileTable,String>> defaultFileTableRepository) {
         fileTableRepositoryMap.putAll(defaultFileTableRepository);
     }

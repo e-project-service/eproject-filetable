@@ -2,7 +2,7 @@ package com.github.xiaoyao9184.eproject.filetable.core;
 
 import com.github.xiaoyao9184.eproject.filetable.AutoCreateRepositoryConfiguration;
 import com.github.xiaoyao9184.eproject.filetable.MssqlConfig;
-import com.github.xiaoyao9184.eproject.filetable.config.FileTableDynamicConfiguration;
+import com.github.xiaoyao9184.eproject.filetable.config.DynamicRepositoryConfiguration;
 import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
 import com.github.xiaoyao9184.eproject.filetable.repository.AbstractFileTableRepository;
 import com.github.xiaoyao9184.eproject.filetable.repository.TestFileTableRepository;
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
         classes = {
-                FileTableDynamicConfiguration.class,
+                DynamicRepositoryConfiguration.class,
                 AutoCreateRepositoryConfiguration.class,
                 MssqlConfig.class }
 )

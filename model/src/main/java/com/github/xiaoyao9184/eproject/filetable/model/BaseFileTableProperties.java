@@ -1,6 +1,7 @@
 package com.github.xiaoyao9184.eproject.filetable.model;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +29,6 @@ public class BaseFileTableProperties {
     private boolean autoCreateDirectory = false;
 
     private Map<Operator,OperatorMethod> operatorMethods = new HashMap<>();
-
 
     public String getMappingPath() {
         return mappingPath;
@@ -165,4 +165,5 @@ public class BaseFileTableProperties {
          */
         TABLE
     }
+
 }

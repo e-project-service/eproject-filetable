@@ -1,6 +1,6 @@
 package com.github.xiaoyao9184.eproject.filetable.repository;
 
-import com.github.xiaoyao9184.eproject.filetable.core.SimpleJpaRepositoryBeanFileTableNameProvider;
+import com.github.xiaoyao9184.eproject.filetable.table.SimpleJpaRepositoryBeanFileTableNameProvider;
 import com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProvider;
 import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
 import org.springframework.aop.support.AopUtils;
@@ -15,18 +15,18 @@ import java.util.stream.Collectors;
  *
  * Created by xy on 2020/1/15.
  */
-public class EntityTableNameSwitchTableRepository implements FileTableRepository<AbstractFileTable> {
+public class EntityClassRoutingRepository implements FileTableRepository<AbstractFileTable> {
     private FileTableNameProvider fileTableNameProvider;
 
-    private Map<String,AbstractFileTableRepository<AbstractFileTable,String>> fileTableRepository;
+    private Map<String,AbstractFileTableRepository<AbstractFileTable,String>> entityFileTableRepositoryMap;
 
-    public EntityTableNameSwitchTableRepository(
+    public EntityClassRoutingRepository(
             FileTableNameProvider fileTableNameProvider,
             List<AbstractFileTableRepository> fileTableRepository
     ){
         this.fileTableNameProvider = fileTableNameProvider;
         //noinspection unchecked
-        this.fileTableRepository = fileTableRepository
+        this.entityFileTableRepositoryMap = fileTableRepository
                 .stream()
                 .distinct()
                 .filter(r -> SimpleJpaRepository.class.equals(AopUtils.getTargetClass(r)))
@@ -39,84 +39,84 @@ public class EntityTableNameSwitchTableRepository implements FileTableRepository
     @Override
     public List<AbstractFileTable> getChildByRootLocator(){
         String tableName = fileTableNameProvider.provide();
-        AbstractFileTableRepository<AbstractFileTable,String> repository = fileTableRepository.get(tableName);
+        AbstractFileTableRepository<AbstractFileTable,String> repository = entityFileTableRepositoryMap.get(tableName);
         return repository.getChildByRootLocator();
     }
 
     @Override
     public List<AbstractFileTable> getChildByPathLocator(String pathLocator){
         String tableName = fileTableNameProvider.provide();
-        AbstractFileTableRepository<AbstractFileTable,String> repository = fileTableRepository.get(tableName);
+        AbstractFileTableRepository<AbstractFileTable,String> repository = entityFileTableRepositoryMap.get(tableName);
         return repository.getChildByPathLocator(pathLocator);
     }
 
     @Override
     public List<AbstractFileTable> findByNameContains(String name) {
         String tableName = fileTableNameProvider.provide();
-        AbstractFileTableRepository<AbstractFileTable,String> repository = fileTableRepository.get(tableName);
+        AbstractFileTableRepository<AbstractFileTable,String> repository = entityFileTableRepositoryMap.get(tableName);
         return repository.getChildByRootLocator();
     }
 
     @Override
     public List<AbstractFileTable> findByFileNamespacePathStartsWithAndNameContains(String namespacePath, String name) {
         String tableName = fileTableNameProvider.provide();
-        AbstractFileTableRepository<AbstractFileTable,String> repository = fileTableRepository.get(tableName);
+        AbstractFileTableRepository<AbstractFileTable,String> repository = entityFileTableRepositoryMap.get(tableName);
         return repository.getChildByRootLocator();
     }
 
     @Override
     public Blob getBlobByPath(String path){
         String tableName = fileTableNameProvider.provide();
-        AbstractFileTableRepository<AbstractFileTable,String> repository = fileTableRepository.get(tableName);
+        AbstractFileTableRepository<AbstractFileTable,String> repository = entityFileTableRepositoryMap.get(tableName);
         return repository.getBlobByPath(path);
     }
 
     @Override
     public byte[] getBytesByPath(String fileNamespacePath){
         String name = fileTableNameProvider.provide();
-        AbstractFileTableRepository<AbstractFileTable,String> repository = fileTableRepository.get(name);
+        AbstractFileTableRepository<AbstractFileTable,String> repository = entityFileTableRepositoryMap.get(name);
         return repository.getBytesByPath(fileNamespacePath);
     }
 
     @Override
     public AbstractFileTable getByPath(String fileNamespacePath){
         String tableName = fileTableNameProvider.provide();
-        AbstractFileTableRepository<AbstractFileTable,String> repository = fileTableRepository.get(tableName);
+        AbstractFileTableRepository<AbstractFileTable,String> repository = entityFileTableRepositoryMap.get(tableName);
         return repository.getByPath(fileNamespacePath);
     }
 
     @Override
     public String getPathLocatorStringByPath(String fileNamespacePath) {
         String tableName = fileTableNameProvider.provide();
-        AbstractFileTableRepository<AbstractFileTable,String> repository = fileTableRepository.get(tableName);
+        AbstractFileTableRepository<AbstractFileTable,String> repository = entityFileTableRepositoryMap.get(tableName);
         return repository.getPathLocatorStringByPath(fileNamespacePath);
     }
 
     @Override
     public Integer deleteByPath(String fileNamespacePath){
         String tableName = fileTableNameProvider.provide();
-        AbstractFileTableRepository<AbstractFileTable,String> repository = fileTableRepository.get(tableName);
+        AbstractFileTableRepository<AbstractFileTable,String> repository = entityFileTableRepositoryMap.get(tableName);
         return repository.deleteByPath(fileNamespacePath);
     }
 
     @Override
     public Integer updateNameByPathLocator(String pathLocator, String name) {
         String tableName = fileTableNameProvider.provide();
-        AbstractFileTableRepository<AbstractFileTable,String> repository = fileTableRepository.get(tableName);
+        AbstractFileTableRepository<AbstractFileTable,String> repository = entityFileTableRepositoryMap.get(tableName);
         return repository.updateNameByPathLocator(pathLocator, name);
     }
 
     @Override
     public Integer insertFileByNameAndPathLocator(String pathLocator, String name) {
         String tableName = fileTableNameProvider.provide();
-        AbstractFileTableRepository<AbstractFileTable,String> repository = fileTableRepository.get(tableName);
+        AbstractFileTableRepository<AbstractFileTable,String> repository = entityFileTableRepositoryMap.get(tableName);
         return repository.insertFileByNameAndPathLocator(pathLocator, name);
     }
 
     @Override
     public Integer insertDirectoryByNameAndPathLocator(String pathLocator, String name) {
         String tableName = fileTableNameProvider.provide();
-        AbstractFileTableRepository<AbstractFileTable,String> repository = fileTableRepository.get(tableName);
+        AbstractFileTableRepository<AbstractFileTable,String> repository = entityFileTableRepositoryMap.get(tableName);
         return repository.insertDirectoryByNameAndPathLocator(pathLocator, name);
     }
 }

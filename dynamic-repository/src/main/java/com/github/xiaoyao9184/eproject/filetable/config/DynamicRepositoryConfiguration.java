@@ -8,26 +8,23 @@ import com.github.xiaoyao9184.eproject.filetable.core.interceptor.DynamicFileTab
 import com.github.xiaoyao9184.eproject.filetable.core.interceptor.DynamicFileTableRepositoryInitInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
-import javax.persistence.EntityManager;
 import java.util.Collections;
 
 /**
  * Created by xy on 2020/4/19.
  */
 @Configuration
-public class FileTableDynamicConfiguration {
-    private static final Logger logger = LoggerFactory.getLogger(FileTableDynamicConfiguration.class);
+public class DynamicRepositoryConfiguration {
+    private static final Logger logger = LoggerFactory.getLogger(DynamicRepositoryConfiguration.class);
 
-    public FileTableDynamicConfiguration() {
+    public DynamicRepositoryConfiguration() {
         if(logger.isDebugEnabled()){
-            logger.debug("Init {}", FileTableDynamicConfiguration.class.getName());
+            logger.debug("Init {}", DynamicRepositoryConfiguration.class.getName());
         }
     }
 

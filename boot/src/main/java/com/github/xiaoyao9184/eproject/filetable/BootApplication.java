@@ -2,12 +2,14 @@ package com.github.xiaoyao9184.eproject.filetable;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import java.util.HashMap;
 
 /**
  * Created by xy on 2019/6/24.
  */
+@EnableAspectJAutoProxy
 @SpringBootApplication
 public class BootApplication {
 

@@ -3,10 +3,10 @@ package com.github.xiaoyao9184.eproject.filetable.repository;
 import com.github.xiaoyao9184.eproject.filetable.MssqlConfig;
 import com.github.xiaoyao9184.eproject.filetable.SwitchRepositoryConfiguration;
 import com.github.xiaoyao9184.eproject.filetable.autoconfigure.FileTableAutoConfiguration;
-import com.github.xiaoyao9184.eproject.filetable.core.ThreadLocalEntitySwitchFileTableNameProvider;
 import com.github.xiaoyao9184.eproject.filetable.entity.SampleFileTable;
 import com.github.xiaoyao9184.eproject.filetable.entity.TestFileTable;
 import com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties;
+import com.github.xiaoyao9184.eproject.filetable.table.ThreadLocalEntitySwitchFileTableNameProvider;
 import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.msfscc.FileAttributes;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
@@ -43,13 +43,13 @@ import java.util.*;
 )
 @TestPropertySource(locations = "classpath:filetable-db.properties")
 @ComponentScan("com.github.xiaoyao9184.eproject.filetable")
-public class EntityTableNameSwitchTableRepositoryTest {
+public class EntityTableNameRoutingRepositoryTest {
 
     @Autowired
     ThreadLocalEntitySwitchFileTableNameProvider tableNameProvider;
 
     @Autowired
-    EntityTableNameSwitchTableRepository databaseFileTableHandlerRepository;
+    EntityClassRoutingRepository databaseFileTableHandlerRepository;
 
     @Autowired
     SampleFileTableRepository sampleFileTableRepository;

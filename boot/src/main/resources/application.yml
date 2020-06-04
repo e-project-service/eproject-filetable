@@ -56,8 +56,13 @@ spring:
       max-lifetime: 1800000
       connection-timeout: 60000
       connection-test-query: select 1
-#  jpa:
-#    hibernate:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.SQLServer2012Dialect
+    properties:
+      hibernate:
+        show_sql: true
 #      naming:
 #        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
 
@@ -133,6 +138,17 @@ eproject:
       READ_STREAM: FILE
       READ: DATABASE
       DELETE: DATABASE
+
+    tablename:
+      - name: zone
+        exclusive: public
+      - name: client_id
+        exclusive: public
+      - name: username
+        exclusive: admin
+    internalHostnames:
+      - localhost
+      - filetable.local
 
 # this project
 project:

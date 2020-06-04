@@ -3,7 +3,7 @@ package com.github.xiaoyao9184.eproject.filetable;
 import com.github.xiaoyao9184.eproject.filetable.core.DynamicFileTableRepositoryManager;
 import com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProvider;
 import com.github.xiaoyao9184.eproject.filetable.core.FileTableRepositoryProvider;
-import com.github.xiaoyao9184.eproject.filetable.repository.TableNameSwitchTableRepository;
+import com.github.xiaoyao9184.eproject.filetable.repository.TableNameRoutingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
@@ -21,11 +21,11 @@ public class AutoCreateRepositoryConfiguration {
      * @return
      */
     @Bean
-    public TableNameSwitchTableRepository tableNameSwitchTableRepository(
+    public TableNameRoutingRepository tableNameSwitchTableRepository(
             @Autowired FileTableNameProvider fileTableNameProvider,
             @Autowired DynamicFileTableRepositoryManager dynamicFileTableRepositoryManager
             ){
-        return new TableNameSwitchTableRepository(
+        return new TableNameRoutingRepository(
                 fileTableNameProvider,
                 dynamicFileTableRepositoryManager,
                 Collections.emptyMap());
@@ -33,14 +33,14 @@ public class AutoCreateRepositoryConfiguration {
 
     /**
      *
-     * @param entityTableNameSwitchTableRepository
+     * @param entityTableNameRoutingRepository
      * @return
      */
     @Bean
     public FileTableRepositoryProvider fileTableRepositoryProvider(
-            @Autowired TableNameSwitchTableRepository entityTableNameSwitchTableRepository
+            @Autowired TableNameRoutingRepository entityTableNameRoutingRepository
     ){
-        return () -> entityTableNameSwitchTableRepository;
+        return () -> entityTableNameRoutingRepository;
     }
 
     /**

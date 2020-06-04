@@ -11,12 +11,12 @@ import java.util.Map;
 /**
  * Created by xy on 2020/4/18.
  */
-public class TableNameSwitchTableRepository implements FileTableRepository<AbstractFileTable> {
+public class TableNameRoutingRepository implements FileTableRepository<AbstractFileTable> {
     private DynamicFileTableRepositoryManager dynamicFileTableRepositoryManager;
 
     private FileTableNameProvider fileTableNameProvider;
 
-    public TableNameSwitchTableRepository(
+    public TableNameRoutingRepository(
             FileTableNameProvider fileTableNameProvider,
             DynamicFileTableRepositoryManager dynamicFileTableRepositoryManager,
             Map<String,AbstractFileTableRepository<AbstractFileTable,String>> defaultFileTableRepositoryMap

@@ -8,6 +8,8 @@ import com.github.xiaoyao9184.eproject.filetable.core.handle.*;
 import com.github.xiaoyao9184.eproject.filetable.repository.AbstractFileTableRepository;
 import com.github.xiaoyao9184.eproject.filetable.repository.DefaultFileTableRepository;
 import com.github.xiaoyao9184.eproject.filetable.service.FileTableService;
+import com.github.xiaoyao9184.eproject.filetable.core.provider.DefaultFileTableNameProvider;
+import com.github.xiaoyao9184.eproject.filetable.table.SimpleJpaRepositoryBeanFileTableNameProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import static com.github.xiaoyao9184.eproject.filetable.model.Constants.DEFAULT_FILE_TABLE_REPOSITORY;
 
 /**
  * Created by xy on 2020/1/15.
@@ -32,12 +36,10 @@ public class FileTableAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public FileTableNameProvider tableNameProvider(){
+    @ConditionalOnMissingBean(FileTableNameProvider.class)
+    public DefaultFileTableNameProvider defaultFileTableNameProvider(){
         return new DefaultFileTableNameProvider();
     }
-
-    public static final String DEFAULT_FILE_TABLE_REPOSITORY = "databaseFileTableHandlerRepository";
 
     /**
      * Default FileTableRepository

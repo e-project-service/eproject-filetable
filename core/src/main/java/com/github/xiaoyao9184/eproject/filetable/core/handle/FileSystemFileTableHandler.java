@@ -82,6 +82,9 @@ public class FileSystemFileTableHandler implements FileTableHandler {
 
         if(fileTableProperties.isAutoCreateDirectory()){
             boolean dirOk = file.getParentFile().mkdirs();
+            if(!dirOk){
+                logger.error("Cant create parent path!");
+            }
         }
 
         Long copySize;

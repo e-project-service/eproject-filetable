@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration(
         classes = { }
 )
-public class TableNameSwitchTableRepositoryTest {
+public class TableNameRoutingRepositoryTest {
 
     @MockBean
     DynamicFileTableRepositoryManager dynamicFileTableRepositoryManager;
@@ -54,7 +54,7 @@ public class TableNameSwitchTableRepositoryTest {
         doReturn(defaultFileTableRepository)
                 .when(dynamicFileTableRepositoryManager).getAndInitIfNeed(eq("default"));
 
-        TableNameSwitchTableRepository repository = new TableNameSwitchTableRepository(
+        TableNameRoutingRepository repository = new TableNameRoutingRepository(
                 fileTableNameProvider,
                 dynamicFileTableRepositoryManager,
                 Collections.emptyMap()
