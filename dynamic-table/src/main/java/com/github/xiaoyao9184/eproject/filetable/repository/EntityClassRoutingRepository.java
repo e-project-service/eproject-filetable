@@ -1,6 +1,6 @@
 package com.github.xiaoyao9184.eproject.filetable.repository;
 
-import com.github.xiaoyao9184.eproject.filetable.table.SimpleJpaRepositoryBeanFileTableNameProvider;
+import com.github.xiaoyao9184.eproject.filetable.core.provider.SimpleJpaRepositoryBeanFileTableNameProvider;
 import com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProvider;
 import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
 import org.springframework.aop.support.AopUtils;
@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- *
+ * Route to the actual repository based on the name of the entity class table
  * Created by xy on 2020/1/15.
  */
 public class EntityClassRoutingRepository implements FileTableRepository<AbstractFileTable> {

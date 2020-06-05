@@ -4,6 +4,7 @@ import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
 import com.github.xiaoyao9184.eproject.filetable.repository.AbstractFileTableRepository;
 
 /**
+ * Initialize the repository interceptor
  * Created by xy on 2020/4/19.
  */
 public interface DynamicFileTableRepositoryInitInterceptor {

@@ -16,9 +16,9 @@ import com.github.xiaoyao9184.eproject.filetable.security.SecurityContextClientI
 import com.github.xiaoyao9184.eproject.filetable.security.SecurityContextNameFileTableNameProvider;
 import com.github.xiaoyao9184.eproject.filetable.table.strategy.ExclusivelyTypeIfInWhiteListStrategy;
 import com.github.xiaoyao9184.eproject.filetable.zone.ZoneFileTableNameProvider;
-import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,21 +33,23 @@ import java.util.List;
 @Configuration
 public class FileTableDynamicAutoConfiguration {
 
+    /**
+     * Use dynamic-repository
+     */
     @ConditionalOnClass(DynamicRepositoryConfiguration.class)
     @Configuration
     @Import(DynamicRepositoryConfiguration.class)
     public static class DynamicRepositoryAutoConfiguration {
 
         /**
-         * Use
-         * Not create because it not JPA Repository
-         * @param fileTableNameProvider
-         * @param dynamicFileTableRepositoryManager
-         * @return
+         * Virtual repository for routing
+         * @param fileTableNameProvider routing name
+         * @param dynamicFileTableRepositoryManager repository manager
+         * @return virtual repository
          */
         @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
         @Bean
-        public TableNameRoutingRepository tableNameSwitchTableRepository(
+        public TableNameRoutingRepository tableNameRoutingRepository(
                 @Autowired FileTableNameProvider fileTableNameProvider,
                 @Autowired DynamicFileTableRepositoryManager dynamicFileTableRepositoryManager
         ){
@@ -58,53 +60,67 @@ public class FileTableDynamicAutoConfiguration {
         }
 
         /**
-         *
-         * @param entityTableNameRoutingRepository
-         * @return
+         * Use {@link TableNameRoutingRepository} for default
+         * @param tableNameRoutingRepository virtual repository
+         * @return repository provider
          */
         @Bean
         public FileTableRepositoryProvider fileTableRepositoryProvider(
-                @Autowired TableNameRoutingRepository entityTableNameRoutingRepository
+                @Autowired TableNameRoutingRepository tableNameRoutingRepository
         ){
-            return () -> entityTableNameRoutingRepository;
+            return () -> tableNameRoutingRepository;
         }
     }
 
-    @ConditionalOnClass(DynamicTableConfiguration.class)
+    /**
+     * Use dynamic-table
+     * Not use dynamic-repository
+     */
+    @ConditionalOnMissingBean(DynamicRepositoryAutoConfiguration.class)
+    @Configuration
+    @Import(DynamicTableConfiguration.class)
+    public static class DynamicEntityAutoConfiguration {
+
+        /**
+         * Virtual repository for routing
+         * @param fileTableNameProvider routing name
+         * @param fileTableRepositoryList real repository collection
+         * @return virtual repository
+         */
+        @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+        @Bean
+        public EntityClassRoutingRepository entityClassRoutingRepository(
+                @Autowired FileTableNameProvider fileTableNameProvider,
+                @Autowired List<AbstractFileTableRepository> fileTableRepositoryList
+        ){
+            return new EntityClassRoutingRepository(
+                    fileTableNameProvider,
+                    fileTableRepositoryList);
+        }
+
+        /**
+         * Use {@link EntityClassRoutingRepository} for default
+         * @param entityClassRoutingRepository virtual repository
+         * @return repository provider
+         */
+        @Bean
+        public FileTableRepositoryProvider fileTableRepositoryProvider(
+                @Autowired EntityClassRoutingRepository entityClassRoutingRepository
+        ){
+            return () -> entityClassRoutingRepository;
+        }
+
+    }
+
+
+    /**
+     * Use dynamic-repository and dynamic-table
+     */
+    @ConditionalOnClass({DynamicTableConfiguration.class,DynamicRepositoryConfiguration.class})
     @Configuration
     @EnableConfigurationProperties({ FileTableNameProperties.class })
     @Import(DynamicTableConfiguration.class)
     public static class DynamicTableAutoConfiguration {
-
-        /**
-         * Use
-         * Not create because it not JPA Repository
-         * @param fileTableNameProvider
-         * @param fileTableRepository
-         * @return
-         */
-        @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-        @Bean
-        public EntityClassRoutingRepository tableNameSwitchTableRepository(
-                @Autowired FileTableNameProvider fileTableNameProvider,
-                @Autowired List<AbstractFileTableRepository> fileTableRepository
-        ){
-            return new EntityClassRoutingRepository(
-                    fileTableNameProvider,
-                    fileTableRepository);
-        }
-
-        /**
-         *
-         * @param tableNameSwitchTableRepository
-         * @return
-         */
-        @Bean
-        public FileTableRepositoryProvider fileTableRepositoryProvider(
-                @Autowired EntityClassRoutingRepository tableNameSwitchTableRepository
-        ){
-            return () -> tableNameSwitchTableRepository;
-        }
 
         @Bean
         public DynamicTableInitAspect dynamicTableInitAspect(){
@@ -149,9 +165,7 @@ public class FileTableDynamicAutoConfiguration {
 
         }
 
-        @ConditionalOnClass({
-                ZoneFileTableNameProvider.class
-        })
+        @ConditionalOnClass(ZoneFileTableNameProvider.class)
         @Configuration
         public static class ZoneTableNameConfiguration {
 

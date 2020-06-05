@@ -6,6 +6,7 @@ import com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProviderSette
 import java.util.stream.Stream;
 
 /**
+ * Exclusive if provider is manual {@link FileTableNameProviderSetter#isManual(FileTableNameProvider)}
  * Created by xy on 2020/6/1.
  */
 public class ExclusivelyIfManualAvailableStrategy implements MixFileTableNameStrategy {

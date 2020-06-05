@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Extended repository support table creation and drop function {@link FileTableCreatorRepository}
  * Created by xy on 2020/4/19.
  */
 public class DynamicFileTableRepositoryCreatorExpander implements DynamicFileTableRepositoryExpander {

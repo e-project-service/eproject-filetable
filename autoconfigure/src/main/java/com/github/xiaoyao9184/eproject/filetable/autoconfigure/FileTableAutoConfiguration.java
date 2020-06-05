@@ -9,7 +9,7 @@ import com.github.xiaoyao9184.eproject.filetable.repository.AbstractFileTableRep
 import com.github.xiaoyao9184.eproject.filetable.repository.DefaultFileTableRepository;
 import com.github.xiaoyao9184.eproject.filetable.service.FileTableService;
 import com.github.xiaoyao9184.eproject.filetable.core.provider.DefaultFileTableNameProvider;
-import com.github.xiaoyao9184.eproject.filetable.table.SimpleJpaRepositoryBeanFileTableNameProvider;
+import com.github.xiaoyao9184.eproject.filetable.core.provider.SimpleJpaRepositoryBeanFileTableNameProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

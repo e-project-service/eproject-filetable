@@ -1,6 +1,7 @@
 package com.github.xiaoyao9184.eproject.filetable.zone;
 
 /**
+ * Zone name holder in thread
  * Created by xy on 2020/6/1.
  */
 public class ZoneHolder {

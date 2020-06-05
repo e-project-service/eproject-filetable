@@ -6,7 +6,7 @@ import com.github.xiaoyao9184.eproject.filetable.autoconfigure.FileTableAutoConf
 import com.github.xiaoyao9184.eproject.filetable.entity.SampleFileTable;
 import com.github.xiaoyao9184.eproject.filetable.entity.TestFileTable;
 import com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties;
-import com.github.xiaoyao9184.eproject.filetable.table.ThreadLocalEntitySwitchFileTableNameProvider;
+import com.github.xiaoyao9184.eproject.filetable.table.ThreadLocalEntityClassSwitchableProvider;
 import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.msfscc.FileAttributes;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
@@ -46,7 +46,7 @@ import java.util.*;
 public class EntityTableNameRoutingRepositoryTest {
 
     @Autowired
-    ThreadLocalEntitySwitchFileTableNameProvider tableNameProvider;
+    ThreadLocalEntityClassSwitchableProvider tableNameProvider;
 
     @Autowired
     EntityClassRoutingRepository databaseFileTableHandlerRepository;

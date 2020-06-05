@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 /**
+ * Exclusive if {@link SecurityContextNameFileTableNameProvider} result is in the whitelist
+ * and use {@link SecurityContextClientIdFileTableNameProvider} same time
  * Created by xy on 2020/6/1.
  */
 public class ExclusivelyUsernameStrategy extends ExclusivelyIfInWhiteListStrategy implements MixFileTableNameStrategy {

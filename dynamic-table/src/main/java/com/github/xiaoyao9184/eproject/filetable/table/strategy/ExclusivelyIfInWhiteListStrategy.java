@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 /**
+ * Exclusive if any provider provide result is in the whitelist
  * Created by xy on 2020/6/1.
  */
 public abstract class ExclusivelyIfInWhiteListStrategy implements MixFileTableNameStrategy {

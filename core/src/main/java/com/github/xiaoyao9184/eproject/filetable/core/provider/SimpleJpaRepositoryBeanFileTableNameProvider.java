@@ -1,10 +1,11 @@
-package com.github.xiaoyao9184.eproject.filetable.table;
+package com.github.xiaoyao9184.eproject.filetable.core.provider;
 
 import com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProvider;
 import com.github.xiaoyao9184.eproject.filetable.core.FileTableRepositoryProvider;
 import com.github.xiaoyao9184.eproject.filetable.model.Named;
 import com.github.xiaoyao9184.eproject.filetable.model.TableNameProviders;
 import com.github.xiaoyao9184.eproject.filetable.repository.AbstractFileTableRepository;
+import com.github.xiaoyao9184.eproject.filetable.repository.FileTableRepository;
 import org.springframework.aop.framework.Advised;
 import org.springframework.data.jpa.repository.support.JpaMetamodelEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
@@ -14,6 +15,8 @@ import javax.persistence.Table;
 import java.lang.reflect.Field;
 
 /**
+ * The table name provided by the {@link FileTableRepository} obtained by {@link FileTableRepositoryProvider}
+ * Note that {@link FileTableRepositoryProvider} must provide an real {@link SimpleJpaRepository}
  * Created by xy on 2020/1/15.
  */
 public class SimpleJpaRepositoryBeanFileTableNameProvider implements FileTableNameProvider, Named {
@@ -27,6 +30,10 @@ public class SimpleJpaRepositoryBeanFileTableNameProvider implements FileTableNa
     @Override
     public String provide() {
         Object databaseFileTableHandlerRepository = repositoryProvider.provide();
+        if(!(databaseFileTableHandlerRepository instanceof SimpleJpaRepository)){
+            // is not SimpleJpaRepository maybe is virtual repository
+            return null;
+        }
         return getSimpleJpaRepositoryTableName((AbstractFileTableRepository) databaseFileTableHandlerRepository);
     }
 
@@ -36,6 +43,11 @@ public class SimpleJpaRepositoryBeanFileTableNameProvider implements FileTableNa
     }
 
 
+    /**
+     * Get the table name through {@link JpaMetamodelEntityInformation} in {@link SimpleJpaRepository}
+     * @param abstractFileTableRepository repository
+     * @return table name on {@link Table}
+     */
     public static String getSimpleJpaRepositoryTableName(AbstractFileTableRepository abstractFileTableRepository) {
         try{
             SimpleJpaRepository jpaRepository = (SimpleJpaRepository) ((Advised)abstractFileTableRepository).getTargetSource().getTarget();

@@ -140,12 +140,14 @@ eproject:
       DELETE: DATABASE
 
     tablename:
-      - name: zone
-        exclusive: public
-      - name: client_id
-        exclusive: public
-      - name: username
-        exclusive: admin
+      mix:
+        - name: zone
+          exclusive: public
+        - name: client_id
+          exclusive: public
+        - name: username
+          exclusive: admin
+
     internalHostnames:
       - localhost
       - filetable.local

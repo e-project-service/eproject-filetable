@@ -17,12 +17,12 @@ public class FileTableNameProperties extends TableNameProperties {
 
     @PostConstruct
     public void init(){
-        if(super.size() == 0){
-            super.addAll(Arrays.asList(
-                    new TableName(TableNameProviders.zone),
-                    new TableName(TableNameProviders.client_id),
-                    new TableName(TableNameProviders.username),
-                    new TableName(TableNameProviders.name)
+        if(super.getMix().size() == 0){
+            super.setMix(Arrays.asList(
+                    new Mix(TableNameProviders.zone),
+                    new Mix(TableNameProviders.client_id),
+                    new Mix(TableNameProviders.username),
+                    new Mix(TableNameProviders.name)
             ));
         }
     }

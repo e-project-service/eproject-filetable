@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
+ * Connect the names provided by all providers join by '_'
  * Created by xy on 2020/6/1.
  */
 public class AllWithJoinStrategy implements MixFileTableNameStrategy {

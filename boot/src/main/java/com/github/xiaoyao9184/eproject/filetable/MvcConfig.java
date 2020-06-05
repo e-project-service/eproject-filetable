@@ -3,6 +3,8 @@ package com.github.xiaoyao9184.eproject.filetable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -36,5 +38,12 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         }
     }
 
-
+//    @Override
+//    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+//        configurer.favorPathExtension(false).
+//                favorParameter(false).
+//                ignoreAcceptHeader(false).
+//                useJaf(false).
+//                defaultContentType(MediaType.APPLICATION_JSON);
+//    }
 }

@@ -1,19 +1,16 @@
 package com.github.xiaoyao9184.eproject.filetable.config;
 
 import com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProvider;
-import com.github.xiaoyao9184.eproject.filetable.core.FileTableRepositoryProvider;
 import com.github.xiaoyao9184.eproject.filetable.model.TableNameProperties;
 import com.github.xiaoyao9184.eproject.filetable.model.TableNameProviders;
 import com.github.xiaoyao9184.eproject.filetable.table.MixFileTableNameProvider;
-import com.github.xiaoyao9184.eproject.filetable.table.SimpleJpaRepositoryBeanFileTableNameProvider;
-import com.github.xiaoyao9184.eproject.filetable.table.ThreadLocalEntitySwitchFileTableNameProvider;
-import com.github.xiaoyao9184.eproject.filetable.table.ThreadLocalFileTableNameProvider;
+import com.github.xiaoyao9184.eproject.filetable.table.ThreadLocalEntityClassSwitchableProvider;
+import com.github.xiaoyao9184.eproject.filetable.table.ThreadLocalTableNameSwitchableProvider;
 import com.github.xiaoyao9184.eproject.filetable.table.strategy.AllWithJoinStrategy;
 import com.github.xiaoyao9184.eproject.filetable.table.strategy.ExclusivelyIfManualAvailableStrategy;
 import com.github.xiaoyao9184.eproject.filetable.table.strategy.MixFileTableNameStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 
 import java.util.List;
@@ -25,15 +22,25 @@ import java.util.stream.Collectors;
 @Configuration
 public class DynamicTableConfiguration {
 
+//    /**
+//     * Provide table name through current repository by repository provider
+//     * @return Provider
+//     */
+//    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+//    @Bean
+//    public SimpleJpaRepositoryBeanFileTableNameProvider simpleJpaRepositoryBeanFileTableNameProvider(
+//            @Lazy FileTableRepositoryProvider fileTableRepositoryProvider
+//    ){
+//        return new SimpleJpaRepositoryBeanFileTableNameProvider(fileTableRepositoryProvider);
+//    }
+
     /**
-     * Provide table name through current repository by repository provider
+     * Provide table name through thread context by manual setting entity class
      * @return Provider
      */
     @Bean
-    public SimpleJpaRepositoryBeanFileTableNameProvider simpleJpaRepositoryBeanFileTableNameProvider(
-            @Lazy FileTableRepositoryProvider fileTableRepositoryProvider
-    ){
-        return new SimpleJpaRepositoryBeanFileTableNameProvider(fileTableRepositoryProvider);
+    public ThreadLocalEntityClassSwitchableProvider threadLocalEntitySwitchFileTableNameProvider(){
+        return new ThreadLocalEntityClassSwitchableProvider();
     }
 
     /**
@@ -41,29 +48,19 @@ public class DynamicTableConfiguration {
      * @return Provider
      */
     @Bean
-    public ThreadLocalFileTableNameProvider threadLocalFileTableNameProvider(){
-        return new ThreadLocalFileTableNameProvider();
-    }
-
-    /**
-     * Provide table name through thread context by manual setting entity class
-     * @return Provider
-     */
-    @Bean
-    public ThreadLocalEntitySwitchFileTableNameProvider threadLocalEntitySwitchFileTableNameProvider(){
-        return new ThreadLocalEntitySwitchFileTableNameProvider();
+    public ThreadLocalTableNameSwitchableProvider threadLocalTableNameSwitchableProvider(){
+        return new ThreadLocalTableNameSwitchableProvider();
     }
 
     /**
      * Provide table name through mix multiple provider
      * by strategy {@link MixFileTableNameStrategy}
      * and name list {@link TableNameProviders} properties
-     * @param providerList
-     * @param strategyList
-     * @param properties
+     * @param providerList provider collection
+     * @param strategyList strategy collection
+     * @param properties properties
      * @return Provider
      */
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Primary
     @Bean
     public MixFileTableNameProvider mixFileTableNameProvider(
@@ -72,8 +69,8 @@ public class DynamicTableConfiguration {
             TableNameProperties properties
     ) {
         List<TableNameProviders> tableNameProvidersList = properties
-                .stream()
-                .map(TableNameProperties.TableName::getName)
+                .getMix().stream()
+                .map(TableNameProperties.Mix::getName)
                 .collect(Collectors.toList());
 
         return new MixFileTableNameProvider(
@@ -82,11 +79,19 @@ public class DynamicTableConfiguration {
                 providerList);
     }
 
+    /**
+     * Highest priority strategy
+     * @return strategy
+     */
     @Bean
     public ExclusivelyIfManualAvailableStrategy exclusivelyIfManualAvailableStrategy(){
         return new ExclusivelyIfManualAvailableStrategy();
     }
 
+    /**
+     * Highest priority strategy
+     * @return strategy
+     */
     @Bean
     public AllWithJoinStrategy allWithJoinStrategy(){
         return new AllWithJoinStrategy();

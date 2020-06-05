@@ -5,7 +5,7 @@ import com.github.xiaoyao9184.eproject.filetable.core.*;
 import com.github.xiaoyao9184.eproject.filetable.repository.AbstractFileTableRepository;
 import com.github.xiaoyao9184.eproject.filetable.repository.DefaultFileTableRepository;
 import com.github.xiaoyao9184.eproject.filetable.repository.EntityClassRoutingRepository;
-import com.github.xiaoyao9184.eproject.filetable.table.ThreadLocalEntitySwitchFileTableNameProvider;
+import com.github.xiaoyao9184.eproject.filetable.table.ThreadLocalEntityClassSwitchableProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
@@ -48,8 +48,8 @@ public class SwitchRepositoryConfiguration {
      * @return
      */
     @Bean
-    public ThreadLocalEntitySwitchFileTableNameProvider tableNameProvider(){
-        return new ThreadLocalEntitySwitchFileTableNameProvider();
+    public ThreadLocalEntityClassSwitchableProvider tableNameProvider(){
+        return new ThreadLocalEntityClassSwitchableProvider();
     }
 
 }

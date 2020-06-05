@@ -7,6 +7,7 @@ import com.github.xiaoyao9184.eproject.filetable.repository.FileTableCreatorRepo
 import javax.persistence.EntityManager;
 
 /**
+ * Automatically create a table when initializing the repository
  * Created by xy on 2020/4/19.
  */
 public class DynamicFileTableRepositoryCreatorInterceptor implements DynamicFileTableRepositoryInitInterceptor {

@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import static com.github.xiaoyao9184.eproject.filetable.model.TableNameProviders.client_id;
 
 /**
+ * Provide {@link OAuth2Authentication} client id
  * Created by xy on 2020/6/1.
  */
 public class SecurityContextClientIdFileTableNameProvider implements FileTableNameProvider, Named {

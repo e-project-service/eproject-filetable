@@ -5,6 +5,7 @@ import com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProvider;
 import java.util.Collection;
 
 /**
+ * Exclusive if the specified provider provide result in the whitelist
  * Created by xy on 2020/6/1.
  */
 public class ExclusivelyTypeIfInWhiteListStrategy extends ExclusivelyIfInWhiteListStrategy implements MixFileTableNameStrategy {

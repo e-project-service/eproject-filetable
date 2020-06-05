@@ -1,26 +1,34 @@
 package com.github.xiaoyao9184.eproject.filetable.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by xy on 2020/6/1.
  */
-public class TableNameProperties extends ArrayList<TableNameProperties.TableName> {
+public class TableNameProperties {
 
-    public static class TableName {
+    private List<Mix> mix;
+
+    public List<Mix> getMix() {
+        return mix;
+    }
+
+    public void setMix(List<Mix> mix) {
+        this.mix = mix;
+    }
+
+    public static class Mix {
 
         private TableNameProviders name;
 
         private List<String> exclusive = new ArrayList<>();
 
-        public TableName(){
+        public Mix(){
 
         }
 
-        public TableName(TableNameProviders name){
+        public Mix(TableNameProviders name){
             this.name = name;
         }
 
@@ -42,11 +50,11 @@ public class TableNameProperties extends ArrayList<TableNameProperties.TableName
     }
 
     public List<String> getExclusive(TableNameProviders tableNameProviders){
-        return this
+        return this.mix
                 .stream()
                 .filter(tableName -> tableName.getName() == tableNameProviders)
                 .findFirst()
-                .map(TableNameProperties.TableName::getExclusive)
+                .map(Mix::getExclusive)
                 .orElse(null);
     }
 
