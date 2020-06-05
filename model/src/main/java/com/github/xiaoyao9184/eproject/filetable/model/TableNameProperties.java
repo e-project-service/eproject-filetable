@@ -14,7 +14,7 @@ public class TableNameProperties extends ArrayList<TableNameProperties.TableName
 
         private TableNameProviders name;
 
-        private List<String> exclusive;
+        private List<String> exclusive = new ArrayList<>();
 
         public TableName(){
 
