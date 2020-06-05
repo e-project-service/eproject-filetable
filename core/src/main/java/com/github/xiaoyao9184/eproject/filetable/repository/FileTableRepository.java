@@ -34,7 +34,7 @@ public interface FileTableRepository<T extends AbstractFileTable> {
             ",[path_locator].ToString() as locator" +
             ",[file_stream].GetFileNamespacePath() as file_namespace_path" +
             ",[file_stream].PathName() as path_name" +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [parent_path_locator] is null", nativeQuery = true)
     List<T> getChildByRootLocator();
 
@@ -63,7 +63,7 @@ public interface FileTableRepository<T extends AbstractFileTable> {
             ",[path_locator].ToString() as locator" +
             ",[file_stream].GetFileNamespacePath() as file_namespace_path" +
             ",[file_stream].PathName() as path_name" +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [parent_path_locator] = GetPathLocator(:path)", nativeQuery = true)
     List<T> getChildByPathLocator(@Param("path") String fullFileNamespacePath);
 
@@ -88,7 +88,7 @@ public interface FileTableRepository<T extends AbstractFileTable> {
             ",[path_locator].ToString() as locator" +
             ",[file_stream].GetFileNamespacePath() as file_namespace_path" +
             ",[file_stream].PathName() as path_name" +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [name] like ('%' + :name + '%')", nativeQuery = true)
     List<T> findByNameContains(@Param("name") String name);
 
@@ -113,7 +113,7 @@ public interface FileTableRepository<T extends AbstractFileTable> {
             ",[path_locator].ToString() as locator" +
             ",[file_stream].GetFileNamespacePath() as file_namespace_path" +
             ",[file_stream].PathName() as path_name" +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [file_stream].GetFileNamespacePath() like (:namespacePath + '%')" +
             " and [name] like ('%' + :name + '%')", nativeQuery = true)
     List<T> findByFileNamespacePathStartsWithAndNameContains(@Param("namespacePath") String namespacePath, @Param("name") String name);
@@ -121,13 +121,13 @@ public interface FileTableRepository<T extends AbstractFileTable> {
     //TODO fix mapping
     @Query(value = "select " +
             " file_stream" +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [file_stream].GetFileNamespacePath() = :path", nativeQuery = true)
     Blob getBlobByPath(@Param("path") String path);
 
     @Query(value = "select " +
             " file_stream" +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [file_stream].GetFileNamespacePath() = :path", nativeQuery = true)
     byte[] getBytesByPath(@Param("path") String fileNamespacePath);
 
@@ -152,7 +152,7 @@ public interface FileTableRepository<T extends AbstractFileTable> {
             ",[path_locator].ToString() as locator" +
             ",[file_stream].GetFileNamespacePath() as file_namespace_path" +
             ",[file_stream].PathName() as path_name" +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [file_stream].GetFileNamespacePath() = :path", nativeQuery = true)
     T getByPath(@Param("path") String fileNamespacePath);
 
@@ -164,17 +164,17 @@ public interface FileTableRepository<T extends AbstractFileTable> {
      */
     @Query(value = "select " +
             " CONVERT(varchar(max), [path_locator].ToString()) as locator" +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [file_stream].GetFileNamespacePath() = :path", nativeQuery = true)
     String getPathLocatorStringByPath(@Param("path") String fileNamespacePath);
 
     @Query(value = "delete " +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [file_stream].GetFileNamespacePath() = :path", nativeQuery = true)
     @Modifying
     Integer deleteByPath(@Param("path") String fileNamespacePath);
 
-    @Query(value = "update #{#entityName}" +
+    @Query(value = "update \"#{#entityName}\"" +
             " set name = :name" +
             " where [path_locator] = GetPathLocator(:path)", nativeQuery = true)
     @Modifying
@@ -185,7 +185,7 @@ public interface FileTableRepository<T extends AbstractFileTable> {
      * @param name
      * @return
      */
-    @Query(value = "insert into #{#entityName}" +
+    @Query(value = "insert into \"#{#entityName}\"" +
             " ([name],[file_stream],[path_locator]) " +
             " values (:name, 0x0, :path)", nativeQuery = true)
     @Modifying
@@ -196,7 +196,7 @@ public interface FileTableRepository<T extends AbstractFileTable> {
      * @param name
      * @return
      */
-    @Query(value = "insert into #{#entityName}" +
+    @Query(value = "insert into \"#{#entityName}\"" +
             " ([name],[is_directory],[path_locator]) " +
             " values (:name, 1, :path)", nativeQuery = true)
     @Modifying

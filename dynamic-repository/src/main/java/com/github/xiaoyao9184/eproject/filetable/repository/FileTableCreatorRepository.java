@@ -17,22 +17,22 @@ public interface FileTableCreatorRepository<T extends AbstractFileTable> {
     @Transactional
     @Modifying
     @Query(value = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='#{#entityName}' and xtype='U') " +
-            "CREATE TABLE #{#entityName} AS FILETABLE", nativeQuery = true)
+            "CREATE TABLE \"#{#entityName}\" AS FILETABLE", nativeQuery = true)
     int createTableIfNotExists();
 
     @Transactional
     @Modifying
-    @Query(value = "CREATE TABLE #{#entityName} AS FILETABLE", nativeQuery = true)
+    @Query(value = "CREATE TABLE \"#{#entityName}\" AS FILETABLE", nativeQuery = true)
     int createTable();
 
     @Transactional
     @Modifying
     @Query(value = "IF EXISTS (SELECT * FROM sysobjects WHERE name='#{#entityName}' and xtype='U') " +
-            "DROP table #{#entityName}", nativeQuery = true)
+            "DROP table \"#{#entityName}\"", nativeQuery = true)
     int dropTableIfExists();
 
     @Transactional
     @Modifying
-    @Query(value = "DROP table #{#entityName}", nativeQuery = true)
+    @Query(value = "DROP table \"#{#entityName}\"", nativeQuery = true)
     int dropTable();
 }

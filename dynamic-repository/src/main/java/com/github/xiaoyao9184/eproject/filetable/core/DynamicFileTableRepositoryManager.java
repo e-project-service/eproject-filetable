@@ -38,6 +38,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.lang.model.SourceVersion;
 import javax.servlet.FilterRegistration;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -111,7 +112,7 @@ public abstract class DynamicFileTableRepositoryManager {
     /**
      * why use table name for {@link javax.persistence.Entity}
      *
-     * Query Expression only support #{#entityName} form Entity name
+     * Query Expression only support \"#{#entityName}\" form Entity name
      * {@link org.springframework.data.jpa.repository.query.ExpressionBasedStringQuery}
      *
      * And FileTableRepository use Native SQL, so Entity name must use table name
@@ -142,6 +143,10 @@ public abstract class DynamicFileTableRepositoryManager {
 
     public Class<? extends AbstractFileTable> createEntityClass(String name){
         String tableName = apply(name);
+        //
+        if(SourceVersion.isKeyword(name)){
+            name = name.toUpperCase();
+        }
         return this.createEntityClass(name,tableName);
     }
 
