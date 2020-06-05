@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
+ * Provider cut used for dynamic table initialization by {@link DynamicFileTableRepositoryManager}
+ * No need for dynamic entities, because the initialization process is handled by jpa implementation
  * Created by xy on 2020/6/1.
  */
 @Aspect
@@ -21,7 +23,7 @@ public class DynamicTableInitAspect {
     @Autowired
     DynamicFileTableRepositoryManager manager;
 
-    @Pointcut("execution(* com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProvider.provide()) && args()")
+    @Pointcut("execution(* com.github.xiaoyao9184.eproject.filetable.table.MixFileTableNameProvider.provide()) && args()")
     public void provide(){}
 
     @AfterReturning(
@@ -32,7 +34,7 @@ public class DynamicTableInitAspect {
             JoinPoint joinPoint,
             String name,
             FileTableNameProvider provider) throws Throwable {
-        if(!manager.isInitialized(name)){
+        if(name != null && !manager.isInitialized(name)){
             logger.info("Will init dynamic table {}.", name);
             manager.getAndInitIfNeed(name);
         }
