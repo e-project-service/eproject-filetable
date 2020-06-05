@@ -40,6 +40,7 @@ public class MimeApiPathExtensionAdapterContentNegotiationStrategy
 
     @Override
     public List<MediaType> resolveMediaTypes(NativeWebRequest webRequest) throws HttpMediaTypeNotAcceptableException {
+        webRequest.setAttribute(PathExtensionContentNegotiationStrategy.class.getName() + ".SKIP", "true",0);
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         if (request == null) {
             logger.warn("An HttpServletRequest is required to determine the media type key");
