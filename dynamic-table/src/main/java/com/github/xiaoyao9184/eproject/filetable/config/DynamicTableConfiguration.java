@@ -13,6 +13,7 @@ import com.github.xiaoyao9184.eproject.filetable.table.strategy.ExclusivelyIfMan
 import com.github.xiaoyao9184.eproject.filetable.table.strategy.MixFileTableNameStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class DynamicTableConfiguration {
      */
     @Bean
     public SimpleJpaRepositoryBeanFileTableNameProvider simpleJpaRepositoryBeanFileTableNameProvider(
-            FileTableRepositoryProvider fileTableRepositoryProvider
+            @Lazy FileTableRepositoryProvider fileTableRepositoryProvider
     ){
         return new SimpleJpaRepositoryBeanFileTableNameProvider(fileTableRepositoryProvider);
     }
