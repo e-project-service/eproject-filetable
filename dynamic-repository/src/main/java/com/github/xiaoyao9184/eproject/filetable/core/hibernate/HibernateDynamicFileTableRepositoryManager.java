@@ -113,7 +113,7 @@ public class HibernateDynamicFileTableRepositoryManager extends BaseDynamicFileT
             SingleTableEntityPersister singleTableEntityPersister,
             Class<?> entityClass, String tableName) throws IllegalAccessException {
         Cloner cloner = new Cloner();
-        SingleTableEntityPersister newEt = cloner.deepClone(singleTableEntityPersister);
+        SingleTableEntityPersister newEt = cloner.shallowClone(singleTableEntityPersister);
 
 
         Field f_subclassClosure = ReflectionUtils.findField(SingleTableEntityPersister.class,"subclassClosure");
