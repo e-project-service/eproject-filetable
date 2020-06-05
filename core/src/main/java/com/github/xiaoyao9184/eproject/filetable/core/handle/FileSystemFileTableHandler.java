@@ -80,7 +80,7 @@ public class FileSystemFileTableHandler implements FileTableHandler {
 
         File file = new File(uri);
 
-        if(fileTableProperties.isAutoCreateDirectory()){
+        if(fileTableProperties.isAutoCreateDirectory() && path.length() != 0){
             boolean dirOk = file.getParentFile().mkdirs();
             if(!dirOk){
                 logger.error("Cant create parent path!");
