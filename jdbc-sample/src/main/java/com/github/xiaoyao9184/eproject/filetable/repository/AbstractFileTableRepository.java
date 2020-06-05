@@ -37,7 +37,7 @@ public interface AbstractFileTableRepository<T extends AbstractFileTable,ID exte
             ",[path_locator].GetLevel() as level" +
             ",[file_stream].GetFileNamespacePath() as file_namespace_path" +
             ",[file_stream].PathName() as path_name" +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [parent_path_locator] is null", nativeQuery = true)
     List<T> getChildByRootLocator();
 
@@ -61,20 +61,20 @@ public interface AbstractFileTableRepository<T extends AbstractFileTable,ID exte
             ",[path_locator].GetLevel() as level" +
             ",[file_stream].GetFileNamespacePath() as file_namespace_path" +
             ",[file_stream].PathName() as path_name" +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [parent_path_locator] = GetPathLocator(:path)", nativeQuery = true)
     List<T> getChildByPathLocator(@Param("path") String pathLocator);
 
     //TODO fix mapping
     @Query(value = "select " +
             " file_stream" +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [file_stream].GetFileNamespacePath() = :path", nativeQuery = true)
     Blob getBlobByPath(@Param("path") String path);
 
     @Query(value = "select " +
             " file_stream" +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [file_stream].GetFileNamespacePath() = :path", nativeQuery = true)
     byte[] getBytesByPath(@Param("path") String fileNamespacePath);
 
@@ -98,12 +98,12 @@ public interface AbstractFileTableRepository<T extends AbstractFileTable,ID exte
             ",[path_locator].GetLevel() as level" +
             ",[file_stream].GetFileNamespacePath() as file_namespace_path" +
             ",[file_stream].PathName() as path_name" +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [file_stream].GetFileNamespacePath() = :path", nativeQuery = true)
     T getByPath(@Param("path") String fileNamespacePath);
 
     @Query(value = "delete " +
-            " from #{#entityName}" +
+            " from \"#{#entityName}\"" +
             " where [file_stream].GetFileNamespacePath() = :path", nativeQuery = true)
     @Modifying
     Integer deleteByPath(@Param("path") String fileNamespacePath);
