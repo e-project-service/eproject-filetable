@@ -7,6 +7,7 @@ include 'eproject-filetable-dynamic-repository'
 include 'eproject-filetable-dynamic-table'
 include 'eproject-filetable-security'
 include 'eproject-filetable-zone'
+include 'eproject-filetable-info'
 include 'eproject-filetable-autoconfigure'
 include 'eproject-filetable-boot'
 
@@ -23,6 +24,7 @@ project(':eproject-filetable-dynamic-repository').projectDir = new File('dynamic
 project(':eproject-filetable-dynamic-table').projectDir = new File('dynamic-table')
 project(':eproject-filetable-security').projectDir = new File('security')
 project(':eproject-filetable-zone').projectDir = new File('zone')
+project(':eproject-filetable-info').projectDir = new File('info')
 project(':eproject-filetable-autoconfigure').projectDir = new File('autoconfigure')
 project(':eproject-filetable-boot').projectDir = new File('boot')
 
