@@ -22,6 +22,9 @@ public class ServerInfo {
     @Column(name="version")
     private String version;
 
+    @Column(name="root_path")
+    private String rootPath;
+
     public String getServerName() {
         return serverName;
     }
@@ -44,5 +47,13 @@ public class ServerInfo {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getRootPath() {
+        return rootPath;
+    }
+
+    public void setRootPath(String rootPath) {
+        this.rootPath = rootPath;
     }
 }

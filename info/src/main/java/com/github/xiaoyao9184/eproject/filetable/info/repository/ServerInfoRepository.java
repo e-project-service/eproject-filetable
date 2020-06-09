@@ -12,7 +12,8 @@ public interface ServerInfoRepository extends JpaRepository<ServerInfo,String> {
     @Query(value = "select " +
             "@@SERVERNAME as 'server_name', " +
             "@@SERVICENAME as 'service_name', " +
-            "@@VERSION as 'version'", nativeQuery = true)
+            "@@VERSION as 'version'," +
+            "FileTableRootPath() as 'root_path'", nativeQuery = true)
     ServerInfo getServerInfo();
 
 }
