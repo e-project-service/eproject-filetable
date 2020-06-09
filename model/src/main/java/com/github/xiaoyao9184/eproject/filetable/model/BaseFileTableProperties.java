@@ -47,11 +47,11 @@ public class BaseFileTableProperties {
     }
 
     public String getRootPath() {
-        if(rootPath == null){
-            return "\\" + servername +
-                    "\\" + instance +
-                    "\\" + database;
-        }
+//        if(rootPath == null){
+//            return "\\" + servername +
+//                    "\\" + instance +
+//                    "\\" + database;
+//        }
         return rootPath;
     }
 

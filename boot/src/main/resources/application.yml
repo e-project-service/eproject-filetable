@@ -117,14 +117,14 @@ endpoints:
 
 eproject:
   filetable:
-    servername: db.xy.com
-    instance: MSSQLSERVER2012FS
-    database: eProjectFileTable_fs_dir
+#    servername: db.xy.com
+#    instance: MSSQLSERVER2012FS
+#    database: eProjectFileTable_fs_dir
     username: administrator
     password: XY@dev1024
-    domain: WORKGROUP
+#    domain: WORKGROUP
 
-    rootPath: \\\\WIN-P7IGB7G8JV6\\MSSQLSERVER2012FS\\eProjectFileTable_fs_dir
+#    rootPath: \\\\WIN-P7IGB7G8JV6\\MSSQLSERVER2012FS\\eProjectFileTable_fs_dir
     
     autoCreateDirectory: true
 

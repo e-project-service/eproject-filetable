@@ -1,4 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.github.xiaoyao9184.eproject.filetable.autoconfigure.InfoAutoConfiguration,\
 com.github.xiaoyao9184.eproject.filetable.autoconfigure.FileTableAutoConfiguration,\
 com.github.xiaoyao9184.eproject.filetable.autoconfigure.FileInfoAutoConfiguration,\
 com.github.xiaoyao9184.eproject.filetable.autoconfigure.FileTableDynamicAutoConfiguration,\

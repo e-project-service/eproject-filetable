@@ -399,6 +399,7 @@ project(':eproject-filetable-autoconfigure') {
         optional(project(':eproject-filetable-dynamic-repository'))
         optional(project(':eproject-filetable-security'))
         optional(project(':eproject-filetable-zone'))
+        optional(project(':eproject-filetable-info'))
 
         //Test
         testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -476,6 +477,7 @@ project(':eproject-filetable-boot') {
         compile(project(':eproject-filetable-dynamic-repository'))
         compile(project(':eproject-filetable-security'))
         compile(project(':eproject-filetable-zone'))
+        compile(project(':eproject-filetable-info'))
 
         testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}") {
             exclude(module: 'commons-logging')
