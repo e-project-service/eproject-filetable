@@ -2,6 +2,7 @@ package com.github.xiaoyao9184.eproject.filetable.core.handle;
 
 import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
 import com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties;
+import com.github.xiaoyao9184.eproject.filetable.model.MappingProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,8 +30,12 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
     private BaseFileTableProperties fileTableProperties;
 
     @Autowired
+    private MappingProperties mappingProperties;
+
+    @Autowired
     private DatabaseFileTableHandler databaseFileTableHandler;
 
+    //TODO when not on windows platform will not Autowired fileSystemFileTableHandler
     @Autowired
     private FileSystemFileTableHandler fileSystemFileTableHandler;
 
@@ -51,7 +56,8 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
                 .getOrDefault(CREATE, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.create(multipartFile,uri);
-        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
+        //TODO when not on windows platform will not Autowired fileSystemFileTableHandler
+        }else if(om == FILE && mappingProperties.getDevice() == null){
             return smbFileTableHandler.create(multipartFile,uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.create(multipartFile,uri);
@@ -65,7 +71,7 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
                 .getOrDefault(CREATE, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.create(file,uri);
-        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && mappingProperties.getDevice() == null){
             return smbFileTableHandler.create(file,uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.create(file,uri);
@@ -79,7 +85,7 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
                 .getOrDefault(CREATE, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.create(bytes,uri);
-        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && mappingProperties.getDevice() == null){
             return smbFileTableHandler.create(bytes,uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.create(bytes,uri);
@@ -93,7 +99,7 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
                 .getOrDefault(CREATE, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.create(uri);
-        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && mappingProperties.getDevice() == null){
             return smbFileTableHandler.create(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.create(uri);
@@ -107,7 +113,7 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
                 .getOrDefault(CREATE, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.create(stream,uri);
-        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && mappingProperties.getDevice() == null){
             return smbFileTableHandler.create(stream,uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.create(stream,uri);
@@ -121,7 +127,7 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
                 .getOrDefault(READ_STREAM, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.readFile(uri);
-        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && mappingProperties.getDevice() == null){
             return smbFileTableHandler.readFile(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.readFile(uri);
@@ -135,7 +141,7 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
                 .getOrDefault(READ_STREAM, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.readBytes(uri);
-        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && mappingProperties.getDevice() == null){
             return smbFileTableHandler.readBytes(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.readBytes(uri);
@@ -149,7 +155,7 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
                 .getOrDefault(READ_STREAM, FILE);
         if(om == DATABASE){
             return databaseFileTableHandler.readStream(uri);
-        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && mappingProperties.getDevice() == null){
             return smbFileTableHandler.readStream(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.readStream(uri);
@@ -163,7 +169,7 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
                 .getOrDefault(READ, DATABASE);
         if(om == DATABASE){
             return databaseFileTableHandler.read(uri);
-        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && mappingProperties.getDevice() == null){
             return smbFileTableHandler.read(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.read(uri);
@@ -177,7 +183,7 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
                 .getOrDefault(DELETE, DATABASE);
         if(om == DATABASE){
             return databaseFileTableHandler.delete(uri);
-        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && mappingProperties.getDevice() == null){
             return smbFileTableHandler.delete(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.delete(uri);
@@ -191,7 +197,7 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
                 .getOrDefault(READ, DATABASE);
         if(om == DATABASE){
             return databaseFileTableHandler.readChild(uri);
-        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && mappingProperties.getDevice() == null){
             return smbFileTableHandler.readChild(uri);
         }else if(om == FILE){
             return fileSystemFileTableHandler.readChild(uri);
@@ -205,7 +211,7 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
                 .getOrDefault(RENAME, DATABASE);
         if(om == DATABASE){
             return databaseFileTableHandler.rename(uri, name);
-        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && mappingProperties.getDevice() == null){
             return smbFileTableHandler.rename(uri, name);
         }else if(om == FILE){
             return fileSystemFileTableHandler.rename(uri, name);
@@ -219,7 +225,7 @@ public class ConfigurationFileTableHandler implements FileTableHandler {
                 .getOrDefault(SEARCH, DATABASE);
         if(om == DATABASE){
             return databaseFileTableHandler.search(baseUri, search);
-        }else if(om == FILE && fileTableProperties.getMappingPath() == null){
+        }else if(om == FILE && mappingProperties.getDevice() == null){
             return smbFileTableHandler.search(baseUri, search);
         }
         throw new UnsupportedOperationException("Configuration error!");

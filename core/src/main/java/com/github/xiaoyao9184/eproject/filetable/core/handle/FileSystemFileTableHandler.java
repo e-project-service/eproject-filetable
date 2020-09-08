@@ -7,6 +7,7 @@ import com.github.xiaoyao9184.eproject.filetable.core.mapping.FileTablePathBuild
 import com.github.xiaoyao9184.eproject.filetable.entity.AbstractFileTable;
 import com.github.xiaoyao9184.eproject.filetable.entity.DefaultFileTable;
 import com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties;
+import com.github.xiaoyao9184.eproject.filetable.model.MappingProperties;
 import com.github.xiaoyao9184.eproject.filetable.repository.AbstractFileTableRepository;
 import com.github.xiaoyao9184.eproject.filetable.util.URIUtil;
 import org.apache.commons.io.FilenameUtils;
@@ -44,6 +45,9 @@ public class FileSystemFileTableHandler implements FileTableHandler {
     private BaseFileTableProperties fileTableProperties;
 
     @Autowired
+    private MappingProperties mappingProperties;
+
+    @Autowired
     private FileTableNameProvider fileTableNameProvider;
 
     private FileTableLocalhostMappingBuilder fileTableLocalhostMappingBuilder;
@@ -51,12 +55,12 @@ public class FileSystemFileTableHandler implements FileTableHandler {
     @PostConstruct
     public void init(){
         fileTableLocalhostMappingBuilder = FileTableLocalhostMappingBuilder.newInstance()
-                .root(fileTableProperties.getMappingPath())
+                .root(mappingProperties.getDevice() + ":/")
                 .table(fileTableNameProvider)
                 .database(fileTableProperties.getDatabase())
                 .instance(fileTableProperties.getInstance())
                 .server(fileTableProperties.getServername())
-                .location(fileTableProperties.getMappingLocation());
+                .location(mappingProperties.getLocation());
     }
 
     /**

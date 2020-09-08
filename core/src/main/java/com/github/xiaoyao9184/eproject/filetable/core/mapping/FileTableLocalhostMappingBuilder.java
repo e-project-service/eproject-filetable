@@ -1,7 +1,7 @@
 package com.github.xiaoyao9184.eproject.filetable.core.mapping;
 
 import com.github.xiaoyao9184.eproject.filetable.core.FileTableNameProvider;
-import com.github.xiaoyao9184.eproject.filetable.model.BaseFileTableProperties;
+import com.github.xiaoyao9184.eproject.filetable.model.MappingProperties;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -15,13 +15,13 @@ public class FileTableLocalhostMappingBuilder {
         return new FileTableLocalhostMappingBuilder();
     }
 
-    private BaseFileTableProperties.MappingLocation location;
+    private MappingProperties.MappingLocation location;
     private String root;
     private String servername;
     private String instance;
     private String database;
 
-    public FileTableLocalhostMappingBuilder location(BaseFileTableProperties.MappingLocation location){
+    public FileTableLocalhostMappingBuilder location(MappingProperties.MappingLocation location){
         this.location = location;
         return this;
     }

@@ -25,7 +25,7 @@ import static com.github.xiaoyao9184.eproject.filetable.model.Constants.DEFAULT_
  * Created by xy on 2020/1/15.
  */
 @Configuration
-@EnableConfigurationProperties({ FileTableProperties.class })
+@EnableConfigurationProperties({ FileTableProperties.class, FileTableMappingProperties.class })
 public class FileTableAutoConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(FileTableAutoConfiguration.class);
 

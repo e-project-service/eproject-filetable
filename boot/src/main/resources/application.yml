@@ -128,16 +128,15 @@ eproject:
     
     autoCreateDirectory: true
 
-    #
-    # But
-    mappingPath: N:/
-    mappingLocation: DATABASE
-
     operatorMethods:
       CREATE: FILE
       READ_STREAM: FILE
       READ: DATABASE
       DELETE: DATABASE
+
+    mapping:
+      device: ''
+      location: DATABASE
 
     tablename:
       mix:

@@ -47,6 +47,13 @@ allprojects {
     configurations.all {
         resolutionStrategy.cacheChangingModulesFor  0,'seconds'
     }
+
+//    configurations.all {
+//        resolutionStrategy {
+//            force 'net.java.dev.jna:jna:5.6.0'
+//            force 'net.java.dev.jna:jna-platform:5.6.0'
+//        }
+//    }
 }
 
 project(':eproject-filetable-core') {
@@ -296,6 +303,41 @@ project(':eproject-filetable-info') {
 
 }
 
+project(':eproject-filetable-mapping') {
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-eclipse'
+
+    group 'com.github.xiaoyao9184.eproject.filetable'
+    version "${version}"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+        //slf4j-api
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+        //jna
+        compile (group: 'net.java.dev.jna', name: 'jna', version: '5.6.0'){
+            transitive = false
+            force = true
+        }
+        compile (group: 'net.java.dev.jna', name: 'jna-platform', version: '5.6.0'){
+            transitive = false
+            force = true
+        }
+
+        //junit
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    }
+
+}
+
 project(':eproject-filetable-dynamic-repository') {
 
     apply plugin: 'com.github.ksoichiro.build.info'
@@ -400,6 +442,7 @@ project(':eproject-filetable-autoconfigure') {
         optional(project(':eproject-filetable-security'))
         optional(project(':eproject-filetable-zone'))
         optional(project(':eproject-filetable-info'))
+        optional(project(':eproject-filetable-mapping'))
 
         //Test
         testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -424,7 +467,7 @@ project(':eproject-filetable-boot') {
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'org.springframework.boot'
-    apply plugin: "io.spring.dependency-management"
+//    apply plugin: "io.spring.dependency-management"
     apply plugin: 'propdeps'
     apply plugin: 'net.researchgate.release'
 
@@ -470,6 +513,16 @@ project(':eproject-filetable-boot') {
 //        compile 'io.r2dbc:r2dbc-mssql:1.0.0.BUILD-SNAPSHOT'
 //        compile 'io.r2dbc:r2dbc-mssql:0.8.0.M8'
 
+        //jna
+        compile (group: 'net.java.dev.jna', name: 'jna', version: '5.6.0'){
+            transitive = false
+            force = true
+        }
+        compile (group: 'net.java.dev.jna', name: 'jna-platform', version: '5.6.0'){
+            transitive = false
+            force = true
+        }
+
         //This
         compile(project(':eproject-filestorage-mvc'))
         compile(project(':eproject-filetable-autoconfigure'))
@@ -478,19 +531,20 @@ project(':eproject-filetable-boot') {
         compile(project(':eproject-filetable-security'))
         compile(project(':eproject-filetable-zone'))
         compile(project(':eproject-filetable-info'))
+        compile(project(':eproject-filetable-mapping'))
 
         testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}") {
             exclude(module: 'commons-logging')
         }
     }
 
-    dependencyManagement {
-        imports {
-//            mavenBom 'org.springframework.security:spring-security-bom:4.2.1.RELEASE'
-//            mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR5'
-//            mavenBom 'org.springframework.cloud:spring-cloud-netflix-dependencies:1.2.7.RELEASE'
-        }
-    }
+//    dependencyManagement {
+//        imports {
+////            mavenBom 'org.springframework.security:spring-security-bom:4.2.1.RELEASE'
+////            mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR5'
+////            mavenBom 'org.springframework.cloud:spring-cloud-netflix-dependencies:1.2.7.RELEASE'
+//        }
+//    }
 
     release {
         failOnCommitNeeded = true

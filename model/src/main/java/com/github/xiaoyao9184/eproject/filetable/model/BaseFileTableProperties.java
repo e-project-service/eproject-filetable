@@ -9,15 +9,6 @@ import java.util.Map;
  */
 public class BaseFileTableProperties {
 
-
-    //if mapping smb to location
-    /**
-     * include table name
-     * @see com.github.xiaoyao9184.eproject.filetable.core.FileSystemFileTableHandler
-     */
-    private String mappingPath;
-    private MappingLocation mappingLocation = MappingLocation.DATABASE;
-
     private String rootPath;
     private String servername;
     private String instance;
@@ -29,22 +20,6 @@ public class BaseFileTableProperties {
     private boolean autoCreateDirectory = false;
 
     private Map<Operator,OperatorMethod> operatorMethods = new HashMap<>();
-
-    public String getMappingPath() {
-        return mappingPath;
-    }
-
-    public void setMappingPath(String mappingPath) {
-        this.mappingPath = mappingPath;
-    }
-
-    public MappingLocation getMappingLocation() {
-        return mappingLocation;
-    }
-
-    public void setMappingLocation(MappingLocation mappingLocation) {
-        this.mappingLocation = mappingLocation;
-    }
 
     public String getRootPath() {
 //        if(rootPath == null){
