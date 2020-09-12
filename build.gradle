@@ -471,6 +471,8 @@ project(':eproject-filetable-boot') {
     apply plugin: 'propdeps'
     apply plugin: 'net.researchgate.release'
 
+    apply from: "${serviceTemplateGit}/gradle/services.gradle"
+
     group = 'com.github.xiaoyao9184.eproject.filetable'
     version = "${version}"
 
