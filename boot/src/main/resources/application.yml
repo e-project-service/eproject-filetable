@@ -5,6 +5,8 @@ spring:
   profiles: dev
 
 eproject:
+  db:
+    domain: xy_ds_2016:1433
   auth:
     domain: auth.xy.com:16666
     context-path:
@@ -24,6 +26,8 @@ spring:
   profiles: test
 
 eproject:
+  db:
+    domain: xy_ds_2016:1433
   auth:
     domain: ds1019plus:16666
     context-path:
@@ -35,6 +39,8 @@ spring:
   profiles: prod
 
 eproject:
+  db:
+    domain: db.filetable.com:1433
   auth:
     domain: auth.eproject.com:16666
     context-path:
@@ -46,7 +52,7 @@ spring:
   datasource:
     username: sa
     password: XY@dev1024
-    url: jdbc:sqlserver://db.xy.com:1433;databaseName=eProjectFileTable
+    url: jdbc:sqlserver://${eproject.db.domain};databaseName=eProjectFileTable
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
