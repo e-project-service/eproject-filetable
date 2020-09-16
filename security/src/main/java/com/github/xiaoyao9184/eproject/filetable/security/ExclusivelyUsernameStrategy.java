@@ -5,6 +5,8 @@ import com.github.xiaoyao9184.eproject.filetable.table.strategy.ExclusivelyIfInW
 import com.github.xiaoyao9184.eproject.filetable.table.strategy.MixFileTableNameStrategy;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -24,13 +26,18 @@ public class ExclusivelyUsernameStrategy extends ExclusivelyIfInWhiteListStrateg
 
     @Override
     public boolean should(Stream<FileTableNameProvider> providers) {
-        boolean isWithClient = providers
+        //FIX stream has already been operated upon or closed
+        List<FileTableNameProvider> list = providers
+                .filter(provider -> this.predicate(provider) ||
+                        provider instanceof SecurityContextClientIdFileTableNameProvider)
+                .collect(Collectors.toList());
+        boolean isWithClient = list.stream()
                 .filter(provider -> provider instanceof SecurityContextClientIdFileTableNameProvider)
                 .map(FileTableNameProvider::provide)
                 .findFirst()
                 .isPresent();
         if(isWithClient){
-            return super.should(providers);
+            return super.should(list.stream());
         }
         return false;
     }
