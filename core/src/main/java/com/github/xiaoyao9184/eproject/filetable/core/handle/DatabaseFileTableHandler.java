@@ -10,6 +10,7 @@ import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
@@ -162,20 +163,21 @@ public class DatabaseFileTableHandler implements FileTableHandler {
     private String toFullFileNamespacePath(URI uri){
         //use root because maybe servername use ip
         //and SQLServer use hostname
-        URI base = UriComponentsBuilder.fromUriString(
+
+        //use String not URI for special character in host like '_'
+        String base = UriComponentsBuilder.fromUriString(
                 "smb:" +
                         fileTableProperties.getRootPath()
                                 .replace("\\","/")
         )
                 .build()
-                .toUri();
+                .toUriString();
 
         //path locator is full path with smb share path
-        URI fullFileNamespacePathUri = UriComponentsBuilder.fromUri(base)
+        UriComponents fullFileNamespacePathUri = UriComponentsBuilder.fromUriString(base)
                 .pathSegment(fileTableNameProvider.provide())
                 .path(uri.toString())
-                .build()
-                .toUri();
+                .build();
         String fullFileNamespacePath = "\\\\" +
                 fullFileNamespacePathUri.getHost() +
                 fullFileNamespacePathUri.getPath().replace("/","\\");
