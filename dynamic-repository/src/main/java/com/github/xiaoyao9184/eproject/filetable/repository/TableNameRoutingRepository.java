@@ -47,7 +47,7 @@ public class TableNameRoutingRepository implements FileTableRepository<AbstractF
         String tableName = fileTableNameProvider.provide();
         AbstractFileTableRepository<AbstractFileTable,String> repository =
                 dynamicFileTableRepositoryManager.getAndInitIfNeed(tableName);
-        return repository.getChildByRootLocator();
+        return repository.findByNameContains(name);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class TableNameRoutingRepository implements FileTableRepository<AbstractF
         String tableName = fileTableNameProvider.provide();
         AbstractFileTableRepository<AbstractFileTable,String> repository =
                 dynamicFileTableRepositoryManager.getAndInitIfNeed(tableName);
-        return repository.getChildByRootLocator();
+        return repository.findByFileNamespacePathStartsWithAndNameContains(namespacePath, name);
     }
 
     @Override
