@@ -82,6 +82,7 @@ public class FileTableService implements FileTableHandler {
     }
 
     @Override
+    @Transactional
     public boolean rename(URI uri, String name) throws Exception {
         return fileTableHandler.rename(uri, name);
     }
