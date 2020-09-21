@@ -63,7 +63,7 @@ public class FileSystemFileTableHandlerTest {
         AbstractFileTable a = fileSystemFileTableHandler.create(bytes,uri);
 
         Assert.assertTrue(
-                a.getFile_namespace_path().replace("\\","/").endsWith(uri.toString()));
+                a.getFile_namespace_path().replace("\\","/").endsWith(uri.getPath()));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class FileSystemFileTableHandlerTest {
         AbstractFileTable a = fileSystemFileTableHandler.create(attach_unit,uri);
 
         Assert.assertTrue(
-                a.getFile_namespace_path().replace("\\","/").endsWith(uri.toString()));
+                a.getFile_namespace_path().replace("\\","/").endsWith(uri.getPath()));
     }
 
     @Test
@@ -102,7 +102,7 @@ public class FileSystemFileTableHandlerTest {
         AbstractFileTable a = fileSystemFileTableHandler.create(file,uri);
 
         Assert.assertTrue(
-                a.getFile_namespace_path().replace("\\","/").endsWith(uri.toString() + "MockMultipartFile.txt"));
+                a.getFile_namespace_path().replace("\\","/").endsWith(uri.getPath() + "MockMultipartFile.txt"));
     }
 
     @Test
@@ -116,7 +116,7 @@ public class FileSystemFileTableHandlerTest {
         AbstractFileTable a = fileSystemFileTableHandler.create(uri);
 
         Assert.assertTrue(
-                a.getFile_namespace_path().replace("\\","/").endsWith(uri.toString()));
+                a.getFile_namespace_path().replace("\\","/").endsWith(uri.getPath()));
     }
 
     @Test
@@ -166,7 +166,7 @@ public class FileSystemFileTableHandlerTest {
                 a.getCached_file_size().intValue(),
                 4);
         Assert.assertTrue(
-                a.getFile_namespace_path().replace("\\","/").endsWith(uri.toString()));
+                a.getFile_namespace_path().replace("\\","/").endsWith(uri.getPath()));
     }
 
     @Test

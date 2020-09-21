@@ -125,7 +125,7 @@ public class SMBFileTableHandlerTest {
         AbstractFileTable a = smbFileTableHandler.create(bytes,uri);
 
         Assert.assertTrue(
-                a.getFile_namespace_path().replace("\\","/").endsWith(uri.toString()));
+                a.getFile_namespace_path().replace("\\","/").endsWith(uri.getPath()));
     }
 
     @Test
@@ -146,7 +146,7 @@ public class SMBFileTableHandlerTest {
         AbstractFileTable a = smbFileTableHandler.create(attach_unit,uri);
 
         Assert.assertTrue(
-                a.getFile_namespace_path().replace("\\","/").endsWith(uri.toString()));
+                a.getFile_namespace_path().replace("\\","/").endsWith(uri.getPath()));
     }
 
     @Test
@@ -164,7 +164,7 @@ public class SMBFileTableHandlerTest {
         AbstractFileTable a = smbFileTableHandler.create(file,uri);
 
         Assert.assertTrue(
-                a.getFile_namespace_path().replace("\\","/").endsWith(uri.toString() + "MockMultipartFile.txt"));
+                a.getFile_namespace_path().replace("\\","/").endsWith(uri.getPath() + "MockMultipartFile.txt"));
     }
 
     @Test
@@ -178,7 +178,7 @@ public class SMBFileTableHandlerTest {
         AbstractFileTable a = smbFileTableHandler.create(uri);
 
         Assert.assertTrue(
-                a.getFile_namespace_path().replace("\\","/").endsWith(uri.toString()));
+                a.getFile_namespace_path().replace("\\","/").endsWith(uri.getPath()));
     }
 
     @Test
@@ -229,7 +229,7 @@ public class SMBFileTableHandlerTest {
                 4);
 
         Assert.assertTrue(
-                a.getFile_namespace_path().replace("\\","/").endsWith(uri.toString()));
+                a.getFile_namespace_path().replace("\\","/").endsWith(uri.getPath()));
     }
 
     @Test

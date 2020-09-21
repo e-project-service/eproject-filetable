@@ -144,7 +144,7 @@ public class DatabaseFileTableHandlerTest {
                 a.getCached_file_size().intValue(),
                 1);
         Assert.assertTrue(
-                a.getFile_namespace_path().replace("\\","/").endsWith(uri.toString()));
+                a.getFile_namespace_path().replace("\\","/").endsWith(uri.getPath()));
     }
 
     @Test

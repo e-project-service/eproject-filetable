@@ -130,7 +130,7 @@ public class FileSystemFileTableHandler implements FileTableHandler {
 
     @Override
     public AbstractFileTable create(MultipartFile multipartFile, URI uri) throws Exception {
-        String path = uri.toString();
+        String path = uri.getPath();
         String name = multipartFile.getOriginalFilename();
         if(!uri.toString().endsWith("/")){
             Tuple2<String,String> path_name = separatePathAndNameFromURI(uri);
@@ -152,7 +152,7 @@ public class FileSystemFileTableHandler implements FileTableHandler {
 
     @Override
     public AbstractFileTable create(File file, URI uri) throws Exception {
-        String path = uri.toString();
+        String path = uri.getPath();
         String name = file.getName();
         if(!uri.toString().endsWith("/")){
             Tuple2<String,String> path_name = separatePathAndNameFromURI(uri);

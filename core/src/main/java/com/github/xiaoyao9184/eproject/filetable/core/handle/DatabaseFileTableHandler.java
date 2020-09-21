@@ -176,7 +176,7 @@ public class DatabaseFileTableHandler implements FileTableHandler {
         //path locator is full path with smb share path
         UriComponents fullFileNamespacePathUri = UriComponentsBuilder.fromUriString(base)
                 .pathSegment(fileTableNameProvider.provide())
-                .path(uri.toString())
+                .path(uri.getPath())
                 .build();
         String fullFileNamespacePath = "\\\\" +
                 fullFileNamespacePathUri.getHost() +
