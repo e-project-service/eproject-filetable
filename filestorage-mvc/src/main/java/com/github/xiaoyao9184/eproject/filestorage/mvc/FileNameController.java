@@ -48,7 +48,7 @@ public class FileNameController {
     @RequestMapping(
             value = "/{path:.*}/**",
             method = {RequestMethod.PUT})
-    public ResponseEntity<Resource> rename(
+    public ResponseEntity<Void> rename(
             @ApiParam(value = "file path", required = true)
             @PathVariable("path") String path,
             @ApiParam(value = "new file name", required = true)
