@@ -69,6 +69,10 @@ spring:
     properties:
       hibernate:
         show_sql: true
+  http:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
 #      naming:
 #        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
 
