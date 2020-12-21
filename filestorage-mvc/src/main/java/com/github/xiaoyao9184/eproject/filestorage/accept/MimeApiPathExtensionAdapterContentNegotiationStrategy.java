@@ -50,6 +50,7 @@ public class MimeApiPathExtensionAdapterContentNegotiationStrategy
         Matcher matcher = pattern.matcher(path);
         if(matcher.find()){
             MediaType mediaType = MediaType.parseMediaType(matcher.group(1) + "/" + matcher.group(2));
+            //TODO auto/auto need replace to default
             return Streams.stream(Optional.ofNullable(mediaType))
                     .collect(Collectors.toList());
         }else{

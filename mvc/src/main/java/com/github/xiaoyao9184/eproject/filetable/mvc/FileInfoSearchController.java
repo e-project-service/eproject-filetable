@@ -65,14 +65,14 @@ public class FileInfoSearchController {
                 .pathSegment(path)
                 .build()
                 .toUri();
-        List<FileInfo> attachList = infoStorage.searchInfo(uri, search);
-        if(attachList.size() == 0){
+        List<FileInfo> fileInfos = infoStorage.searchInfo(uri, search);
+        if(fileInfos.size() == 0){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         logger.debug("File path:{}", path);
 
-        return new ResponseEntity<>(attachList, HttpStatus.OK);
+        return new ResponseEntity<>(fileInfos, HttpStatus.OK);
     }
 
 }
