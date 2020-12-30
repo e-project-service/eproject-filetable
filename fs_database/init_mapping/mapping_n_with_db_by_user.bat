@@ -1,0 +1,1 @@
+net use n: \\db.xy.com\MSSQLSERVER\eProjectFileTable_fs_dir XY@dev1024 /user:xy /persistent:yes

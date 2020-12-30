@@ -14,7 +14,7 @@ public class LocalMappingManagerTest {
         LocalMappingManager manager = new LocalMappingManager();
 
         boolean ret = manager.mapping("X:",
-                "\\\\db.xy.com\\MSSQLSERVER2012FS",
+                "\\\\db.xy.com\\MSSQLSERVER",
                 "administrator","XY@dev1024");
 
         assert ret;
@@ -30,7 +30,7 @@ public class LocalMappingManagerTest {
         char letter1 = manager.getAvailableDeviceLetter();
 
         boolean ret = manager.mapping(letter1,
-                "\\\\db.xy.com\\MSSQLSERVER2012FS",
+                "\\\\db.xy.com\\MSSQLSERVER",
                 "administrator","Newhero123");
         assert ret;
 
@@ -38,7 +38,7 @@ public class LocalMappingManagerTest {
         assert letter2 != letter1;
 
         ret = manager.mapping(letter2 + ":",
-                "\\\\db.xy.com\\MSSQLSERVER2012FS",
+                "\\\\db.xy.com\\MSSQLSERVER",
                 "administrator","Newhero123");
         assert ret;
 
