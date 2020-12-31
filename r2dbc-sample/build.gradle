@@ -9,6 +9,7 @@ buildscript {
         springVersion = '5.1.7.RELEASE'
     }
     repositories {
+        maven { url 'https://plugins.gradle.org/m2/' }
         mavenCentral()
         maven { url 'https://repo.spring.io/plugins-release' }
     }
